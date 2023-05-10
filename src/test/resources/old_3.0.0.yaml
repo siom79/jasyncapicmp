@@ -1,0 +1,145 @@
+asyncapi: "3.0.0"
+id: 'https://github.com/siom78/jasyncapicmp'
+defaultContentType: application/json
+info:
+  title: AsyncAPI Sample App
+  version: 1.0.1
+  description: This is a sample app.
+  termsOfService: https://asyncapi.org/terms/
+  contact:
+    name: API Support
+    url: https://www.asyncapi.org/support
+    email: support@asyncapi.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  externalDocs:
+    description: Find more info here
+    url: https://www.asyncapi.org
+  tags:
+    - name: e-commerce
+servers:
+  development:
+    host: localhost:5672
+    description: Development AMQP broker.
+    protocol: amqp
+    protocolVersion: 0-9-1
+    tags:
+      - name: "env:development"
+        description: "This environment is meant for developers to run their own tests."
+  staging:
+    host: 'rabbitmq.in.mycompany.com:5672'
+    pathname: '/{env}'
+    protocol: amqp
+    description: RabbitMQ broker. Use the `env` variable to point to either `production` or `staging`.
+    variables:
+      env:
+        description: Environment to connect to. It can be either `production` or `staging`.
+        enum:
+          - production
+          - staging
+channels:
+  userSignedUp:
+    address: 'user.signedup'
+    messages:
+      userSignedUp:
+        messageId: userSignup
+        name: UserSignup
+        title: User signup
+        summary: Action to sign a user up.
+        description: A longer description
+        contentType: application/json
+        tags:
+          - name: user
+          - name: signup
+          - name: register
+        headers:
+          type: object
+          properties:
+            correlationId:
+              description: Correlation ID set by application
+              type: string
+            applicationInstanceId:
+              description: Unique identifier for a given instance of the publishing application
+              type: string
+        payload:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/userCreate"
+            signup:
+              $ref: "#/components/schemas/signup"
+        correlationId:
+          description: Default Correlation ID
+          location: $message.header#/correlationId
+        traits:
+          - $ref: "#/components/messageTraits/commonHeaders"
+        examples:
+          - name: SimpleSignup
+            summary: A simple UserSignup example message
+            headers:
+              correlationId: my-correlation-id
+              applicationInstanceId: myInstanceId
+            payload:
+              user:
+                someUserKey: someUserValue
+              signup:
+                someSignupKey: someSignupValue
+operations:
+  onUserSignUp:
+    title: User sign up
+    summary: Action to sign a user up.
+    description: A longer description
+    channel:
+      $ref: '#/channels/userSignedUp'
+    action: send
+    tags:
+      - name: user
+      - name: signup
+      - name: register
+    bindings:
+      kafka:
+        bindingVersion: "1.0.0"
+    traits:
+      - $ref: '#/components/operationTraits/kafka'
+components:
+  schemas:
+    userCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    signup:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+  servers:
+    development:
+      url: "{stage}.in.mycompany.com:{port}"
+      description: RabbitMQ broker
+      protocol: amqp
+      protocolVersion: 0-9-1
+      variables:
+        stage:
+          $ref: "#/components/serverVariables/stage"
+        port:
+          $ref: "#/components/serverVariables/port"
+  serverVariables:
+    stage:
+      default: demo
+      description: This value is assigned by the service provider, in this example `mycompany.com`
+    port:
+      enum: [5671, 5672]
+      default: 5672
+  operationTraits:
+    kafka:
+  messageTraits:
+    commonHeaders:
+      messageId: 'commonHeader'
