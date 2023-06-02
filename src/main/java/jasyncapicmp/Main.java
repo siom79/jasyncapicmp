@@ -7,7 +7,8 @@ import jasyncapicmp.config.Config;
 import jasyncapicmp.config.ConfigValidator;
 import jasyncapicmp.loader.FileLoader;
 import jasyncapicmp.model.AsyncApi;
-import jasyncapicmp.output.StdoutYamlOutput;
+import jasyncapicmp.output.OutputProcessor;
+import jasyncapicmp.output.StdoutOutputSink;
 import jasyncapicmp.parser.AsyncApiParser;
 
 import java.util.logging.Level;
@@ -30,8 +31,10 @@ public class Main {
             AsyncApi newAsyncApi = asyncApiParser.parse(newFile, config.getNewPath());
             AsyncApiComparator comparator = new AsyncApiComparator();
             ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
-            StdoutYamlOutput output = new StdoutYamlOutput();
-            output.print(diff);
+            StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+            OutputProcessor stdoutYamlOutput = new OutputProcessor(stdoutOutputTracker);
+            stdoutYamlOutput.process(diff);
+            System.out.println(stdoutOutputTracker);
         } catch (JAsyncApiCmpUserException e) {
             System.err.println(e.getMessage());
         } catch (Exception e) {

@@ -91,6 +91,8 @@ components:
           format: int64
         name:
           type: string
+        firstName:
+          type: string
     Tag:
       type: object
       properties:

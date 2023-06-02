@@ -9,48 +9,59 @@ class StdoutYamlOutputTest {
 
     @Test
     public void newString() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: \"2.6.0\"", "asyncapi: \"2.6.0\"\nid: new");
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 (===)\n" +
-                "id: new (+++)\n");
+        Assertions.assertThat(output).isEqualTo("""
+                asyncapi: 2.6.0 (===)
+                id: new (+++)
+                """);
     }
 
     @Test
     public void removedString() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\nid: old", "asyncapi: 2.6.0\n");
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 (===)\nid: old (---)\n");
     }
 
     @Test
     public void modifiedString() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("id: old", "id: new");
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("id: new (*** old: old)\n");
     }
 
     @Test
     public void unchangedString() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("id: my-id", "id: my-id");
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("id: my-id (===)\n");
     }
 
     @Test
     public void newRemovedUnchangedChangedModel() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("""
 servers:
   development:
@@ -73,12 +84,13 @@ servers:
         description: "changed-to-this desc"
                 """);
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("""
-servers:
-  development:
-    tags:
+servers: (===)
+  development: (===)
+    tags: (***)
       - name: removed (---)
         description: removed desc (---)
       - name: unchanged (===)
@@ -92,7 +104,8 @@ servers:
 
     @Test
     public void newListElement() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("""
 servers:
   development:
@@ -108,14 +121,15 @@ servers:
         description: "new desc"
                 """);
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("""
-servers:
-  development:
+servers: (===)
+  development: (===)
     protocol: amqp (===)
     url: localhost:5672 (===)
-    tags:
+    tags: (+++)
       - name: new (+++)
         description: new desc (+++)
                 """);
@@ -123,7 +137,8 @@ servers:
 
     @Test
     public void newMapElement() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("""
 servers:
                 """, """
@@ -133,11 +148,12 @@ servers:
     protocol: amqp
                 """);
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("""
-servers:
-  development:
+servers: (+++)
+  development: (+++)
     url: localhost:5672 (+++)
     protocol: amqp (+++)
                 """);
@@ -145,7 +161,8 @@ servers:
 
     @Test
     public void removedMapElement() {
-        StdoutYamlOutput stdoutYamlOutput = new StdoutYamlOutput();
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
         ObjectDiff objectDiff = TestUtil.compareYaml("""
 servers:
   development:
@@ -155,13 +172,72 @@ servers:
 servers:
                 """);
 
-        String output = stdoutYamlOutput.print(objectDiff);
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
 
         Assertions.assertThat(output).isEqualTo("""
-servers:
-  development:
+servers: (---)
+  development: (---)
     url: localhost:5672 (---)
     protocol: amqp (---)
+                """);
+    }
+
+    @Test
+    public void newStringListElement() {
+        StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+        OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
+        ObjectDiff objectDiff = TestUtil.compareYaml("""
+servers:
+  production:
+    url: '{username}.gigantic-server.com:{port}/{basePath}'
+    description: The production API server
+    protocol: secure-mqtt
+    variables:
+      username:
+        # note! no enum here means it is an open value
+        default: demo
+        description: This value is assigned by the service provider, in this example `gigantic-server.com`
+      port:
+        enum:
+          - '8883'
+        default: '8883'
+                """, """
+servers:
+  production:
+    url: '{username}.gigantic-server.com:{port}/{basePath}'
+    description: The production API server
+    protocol: secure-mqtt
+    variables:
+      username:
+        # note! no enum here means it is an open value
+        default: demo
+        description: This value is assigned by the service provider, in this example `gigantic-server.com`
+      port:
+        enum:
+          - '8883'
+          - '8884'
+        default: '8883'
+                """);
+
+        outputProcessor.process(objectDiff);
+        String output = stdoutOutputTracker.toString();
+
+        Assertions.assertThat(output).isEqualTo("""
+servers: (===)
+  production: (===)
+    protocol: secure-mqtt (===)
+    description: The production API server (===)
+    url: {username}.gigantic-server.com:{port}/{basePath} (===)
+    variables: (===)
+      port: (===)
+        defaultValue: 8883 (===)
+        enums: (***)
+          - 8883 (===)
+          - 8884 (+++)
+      username: (===)
+        defaultValue: demo (===)
+        description: This value is assigned by the service provider, in this example `gigantic-server.com` (===)
                 """);
     }
 }
