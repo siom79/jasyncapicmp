@@ -35,13 +35,55 @@ an asyncapi specification.
 
 ### Planned features
 
-Development of this tool is not completed, yet. Hence; there are a lot of planned
+Development of this tool is not completed, yet. Hence, there are a lot of planned
 features:
 
 - Evaluation of changes as breaking or not-breaking
 - HTML report
 - Maven plugin
 - Gradle plugin
+
+## Usage
+
+To use the tool you can clone the repository, build the tool and run it:
+
+```bash
+git clone https://github.com/siom79/jasyncapicmp.git
+cd jasyncapicmp
+mvn package
+java -jar target/jasyncapicmp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -o old.yaml -n new.yaml
+```
+
+Sample output:
+
+```yaml
+asyncapi: 2.6.0 (===)
+id: https://github.com/siom79/jasyncapicmp (===)
+info: (===)
+  description: This is a sample app. (===)
+  termsOfService: https://asyncapi.org/terms/ (===)
+  title: AsyncAPI Sample App (===)
+  version: 1.0.0 (*** old: 0.1.0)
+  license: (===)
+    name: Apache 2.0 (===)
+    url: https://www.apache.org/licenses/LICENSE-2.0.html (===)
+  contact: (===)
+    name: API Support (===)
+    url: https://www.asyncapi.org/support (===)
+    email: support@asyncapi.org (*** old: team@asyncapi.org)
+servers: (===)
+  production: (===)
+    protocol: secure-mqtt (===)
+    description: The production API server (===)
+    url: gigantic-server.com:{port}/path (===)
+    variables: (===)
+      port: (===)
+        defaultValue: 8883 (===)
+        enums: (***)
+          - 8883 (===)
+          - 8884 (+++)
+[...]
+```
 
 ## Contributions
 
