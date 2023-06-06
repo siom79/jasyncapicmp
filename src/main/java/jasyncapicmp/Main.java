@@ -1,6 +1,7 @@
 package jasyncapicmp;
 
 import jasyncapicmp.cli.CliParser;
+import jasyncapicmp.cmp.ApiCompatibilityCheck;
 import jasyncapicmp.cmp.AsyncApiComparator;
 import jasyncapicmp.cmp.diff.ObjectDiff;
 import jasyncapicmp.config.Config;
@@ -31,6 +32,8 @@ public class Main {
             AsyncApi newAsyncApi = asyncApiParser.parse(newFile, config.getNewPath());
             AsyncApiComparator comparator = new AsyncApiComparator();
             ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
+			ApiCompatibilityCheck apiCompatibilityCheck = new ApiCompatibilityCheck();
+			diff = apiCompatibilityCheck.check(diff);
             StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
             OutputProcessor stdoutYamlOutput = new OutputProcessor(stdoutOutputTracker);
             stdoutYamlOutput.process(diff);

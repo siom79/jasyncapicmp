@@ -1,5 +1,6 @@
 package jasyncapicmp.cmp.diff;
 
+import jasyncapicmp.cmp.ApiCompatibilityChange;
 import jasyncapicmp.cmp.ChangeStatus;
 import jasyncapicmp.model.Model;
 import lombok.Getter;
@@ -28,7 +29,12 @@ public class MapDiff {
         private Model newValue;
         private ObjectDiff objectDiff;
         private ChangeStatus changeStatus = ChangeStatus.UNCHANGED;
-    }
+		private List<ApiCompatibilityChange> apiCompatibilityChanges = new ArrayList<>();
+
+		public void addCompatibilityChange(ApiCompatibilityChange apiCompatibilityChange) {
+			this.apiCompatibilityChanges.add(apiCompatibilityChange);
+		}
+	}
 
     public static MapDiff compare(Map<String, Model> oldValue, Map<String, Model> newValue) {
         MapDiff mapDiff = new MapDiff();
@@ -37,8 +43,32 @@ public class MapDiff {
         if (oldValue == null && newValue == null) {
             mapDiff.setChangeStatus(ChangeStatus.UNCHANGED);
         } else if (oldValue == null) {
+			for (Map.Entry<String, Model> newEntry : newValue.entrySet()) {
+				String newEntryKey = newEntry.getKey();
+				Model newEntryValue = newEntry.getValue();
+				if (newEntryValue == null) {
+					continue;
+				}
+				MapDiffEntry mapDiffEntry = new MapDiffEntry();
+				mapDiffEntry.setNewValue(newEntryValue);
+				mapDiffEntry.setObjectDiff(ObjectDiff.compare(newEntryValue.getClass(), null, newEntryValue));
+				mapDiffEntry.setChangeStatus(ChangeStatus.ADDED);
+				mapDiff.mapDiffEntries.put(newEntryKey, mapDiffEntry);
+			}
             mapDiff.setChangeStatus(ChangeStatus.ADDED);
         } else if (newValue == null) {
+			for (Map.Entry<String, Model> oldEntry : oldValue.entrySet()) {
+				String oldEntryKey = oldEntry.getKey();
+				Model oldEntryValue = oldEntry.getValue();
+				if (oldEntryValue == null) {
+					continue;
+				}
+				MapDiffEntry mapDiffEntry = new MapDiffEntry();
+				mapDiffEntry.setOldValue(oldEntryValue);
+				mapDiffEntry.setObjectDiff(ObjectDiff.compare(oldEntryValue.getClass(), oldEntryValue, null));
+				mapDiffEntry.setChangeStatus(ChangeStatus.REMOVED);
+				mapDiff.mapDiffEntries.put(oldEntryKey, mapDiffEntry);
+			}
             mapDiff.setChangeStatus(ChangeStatus.REMOVED);
         } else {
             List<String> newProcessed = new ArrayList<>();

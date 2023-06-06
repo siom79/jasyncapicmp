@@ -109,19 +109,6 @@ public class OutputProcessor {
                 printMapDiffEntries(ot, indent.incDefault(), mapDiffEntry.getKey(), mapDiffEntry.getValue());
             }
         }
-        if (mapDiff.getChangeStatus() == ChangeStatus.ADDED) {
-            ot.mapDiffStart(indent, key, mapDiff.getChangeStatus());
-            for (Map.Entry<String, Model> entry : mapDiff.getNewValue().entrySet()) {
-                ot.mapDiffEntry(indent.incDefault(), entry.getKey(), mapDiff.getChangeStatus());
-                printModel(ot, indent.incDefault().incDefault(), entry.getValue(), mapDiff.getChangeStatus());
-            }
-        } else if (mapDiff.getChangeStatus() == ChangeStatus.REMOVED) {
-            ot.mapDiffStart(indent, key, mapDiff.getChangeStatus());
-            for (Map.Entry<String, Model> entry : mapDiff.getOldValue().entrySet()) {
-                ot.mapDiffEntry(indent.incDefault(), entry.getKey(), mapDiff.getChangeStatus());
-                printModel(ot, indent.incDefault().incDefault(), entry.getValue(), mapDiff.getChangeStatus());
-            }
-        }
     }
 
     private void printMapDiffEntries(OutputSink ot, Indent indent, String key, MapDiff.MapDiffEntry mapDiffEntry) {

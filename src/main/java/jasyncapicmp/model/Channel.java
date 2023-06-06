@@ -16,6 +16,7 @@ import java.util.Map;
 @ToString
 public class Channel implements Reference, Model {
     private String address;
+	@Version(since = Version.Versions.V3_0_0)
     private Map<String, Message> messages = new HashMap<>();
     private String title;
     private String summary;
