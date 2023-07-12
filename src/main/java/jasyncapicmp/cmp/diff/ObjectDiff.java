@@ -25,6 +25,7 @@ public class ObjectDiff {
     private Map<String, ObjectDiff> objectDiffs = new HashMap<>();
     private Map<String, MapDiff> mapDiffs = new HashMap<>();
     private Map<String, ListDiff> listDiffs = new HashMap<>();
+	private Map<String, IntegerDiff> integerDiffs = new HashMap<>();
 
     public ObjectDiff(Class<? extends Model> type) {
         this.type = type;
@@ -55,7 +56,9 @@ public class ObjectDiff {
                         compareMaps(oldObj, newObj, objectDiff, field, fieldName);
                     } else if (List.class.isAssignableFrom(fieldType)) {
                         compareLists(oldObj, newObj, objectDiff, field, fieldName);
-                    }
+                    } else if (int.class.isAssignableFrom(fieldType)) {
+						compareInteger(oldObj, newObj, objectDiff, field, fieldName);
+					}
                 }
             }
             return objectDiff;
@@ -91,7 +94,6 @@ public class ObjectDiff {
             objectDiff.objectDiffs.put(fieldName, objectDiffField);
         } else {
             ObjectDiff fieldDiff = ObjectDiff.compare((Class<Model>) fieldType, oldFieldObj, newFieldObj);
-            //TODO comparison
             objectDiff.objectDiffs.put(fieldName, fieldDiff);
         }
     }
@@ -102,6 +104,13 @@ public class ObjectDiff {
         StringDiff stringDiff = StringDiff.compare(oldFieldValue, newFieldValue);
         objectDiff.stringDiffs.put(fieldName, stringDiff);
     }
+
+	private static void compareInteger(Object oldObj, Object newObj, ObjectDiff objectDiff, Field field, String fieldName) throws IllegalAccessException {
+		Integer oldFieldValue = (Integer) field.get(oldObj);
+		Integer newFieldValue = (Integer) field.get(newObj);
+		IntegerDiff integerDiff = IntegerDiff.compare(oldFieldValue, newFieldValue);
+		objectDiff.integerDiffs.put(fieldName, integerDiff);
+	}
 
     public boolean isNull() {
         return oldValue == null && newValue == null;

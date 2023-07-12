@@ -106,8 +106,7 @@ class AsyncApiParserTest {
         Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getHeaders().getProperties().get("applicationInstanceId").getType()).isEqualTo("string");
 
         Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getPayload().getType()).isEqualTo("object");
-        Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getPayload().getProperties().get("user").getType()).isEqualTo("object");
-        Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getPayload().getProperties().get("signup").getType()).isEqualTo("object");
+        Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getPayload().getProperties().get("user").getType()).isEqualTo("string");
 
         Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getCorrelationId().getDescription()).isEqualTo("Default Correlation ID");
         Assertions.assertThat(asyncApi.getChannels().get("userSignedUp").getSubscribe().getMessage().getCorrelationId().getLocation()).isEqualTo("$message.header#/correlationId");

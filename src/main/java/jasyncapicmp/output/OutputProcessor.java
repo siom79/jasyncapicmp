@@ -89,9 +89,9 @@ public class OutputProcessor {
         if (listDiffEntry.getType() == ListDiff.ListDiffEntryType.STRING) {
             switch (listDiffEntry.getChangeStatus()) {
                 case UNCHANGED, ADDED ->
-                        ot.listDiffEntryString(indent, listDiffEntry.getNewValue(), listDiffEntry.getChangeStatus());
+                        ot.listDiffEntryString(indent, listDiffEntry.getNewValue(), listDiffEntry.getChangeStatus(), listDiffEntry);
                 case REMOVED ->
-                        ot.listDiffEntryString(indent, listDiffEntry.getOldValue(), listDiffEntry.getChangeStatus());
+                        ot.listDiffEntryString(indent, listDiffEntry.getOldValue(), listDiffEntry.getChangeStatus(), listDiffEntry);
             }
         } else if (listDiffEntry.getType() == ListDiff.ListDiffEntryType.MODEL) {
             ot.listDiffModelStart(indent);
@@ -112,7 +112,7 @@ public class OutputProcessor {
     }
 
     private void printMapDiffEntries(OutputSink ot, Indent indent, String key, MapDiff.MapDiffEntry mapDiffEntry) {
-        ot.mapDiffEntry(indent, key, mapDiffEntry.getChangeStatus());
+        ot.mapDiffEntry(indent, key, mapDiffEntry.getChangeStatus(), mapDiffEntry);
         ObjectDiff objectDiff = mapDiffEntry.getObjectDiff();
         if (!objectDiff.isNull()) {
             process(ot, objectDiff, indent.incDefault());
@@ -146,17 +146,17 @@ public class OutputProcessor {
                 Object value = field.get(model);
                 if (value != null) {
                     if (String.class.isAssignableFrom(type)) {
-                        ot.stringDiff(indent, field.getName(), (String) value, changeStatus);
+                        ot.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
                     } else if (Integer.class.isAssignableFrom(type)) {
-                        ot.stringDiff(indent, field.getName(), value.toString(), changeStatus);
+                        ot.stringDiff(indent, field.getName(), value.toString(), changeStatus, null);
                     } else if (Map.class.isAssignableFrom(type)) {
                         Map<String, Object> map = (Map<String, Object>) value;
                         for (Map.Entry<String, Object> entry : map.entrySet()) {
                             Object entryValue = entry.getValue();
                             if (entryValue instanceof String) {
-                                ot.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus);
+                                ot.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus, null);
                             } else if (entryValue instanceof Model) {
-                                ot.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus);
+                                ot.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus, null);
                                 printModel(ot, indent.incDefault(), (Model) entryValue, changeStatus);
                             }
                         }
@@ -167,7 +167,7 @@ public class OutputProcessor {
                             if (o instanceof String) {
                                 ot.listDiffStart(indent, field.getName(), changeStatus);
                                 for (Object s : list) {
-                                    ot.listDiffEntryString(indent, s, changeStatus);
+                                    ot.listDiffEntryString(indent, s, changeStatus, null);
                                 }
                             } else if (o instanceof Model) {
                                 ot.listDiffStart(indent, field.getName(), changeStatus);
@@ -187,7 +187,7 @@ public class OutputProcessor {
 
     private void printStringDiff(OutputSink ot, Indent indent, String key, StringDiff value) {
         if (!value.isNull()) {
-            ot.stringDiff(indent, key, value.getOldValue(), value.getNewValue(), value.getChangeStatus());
+            ot.stringDiff(indent, key, value.getOldValue(), value.getNewValue(), value.getChangeStatus(), value);
         }
     }
 }

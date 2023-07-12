@@ -1,7 +1,9 @@
 package jasyncapicmp.cmp.diff;
 
 import jasyncapicmp.JAsyncApiCmpTechnicalException;
+import jasyncapicmp.cmp.ApiCompatibilityChange;
 import jasyncapicmp.cmp.ChangeStatus;
+import jasyncapicmp.cmp.compat.HasCompatibilityChanges;
 import jasyncapicmp.model.ListId;
 import jasyncapicmp.model.Model;
 import lombok.Getter;
@@ -29,12 +31,17 @@ public class ListDiff {
     @Getter
     @Setter
     @ToString
-    public static class ListDiffEntry<T> {
+    public static class ListDiffEntry<T> implements HasCompatibilityChanges {
         ListDiffEntryType type;
         private T oldValue;
         private T newValue;
         private ChangeStatus changeStatus = ChangeStatus.UNCHANGED;
         private ObjectDiff objectDiff;
+		private List<ApiCompatibilityChange> apiCompatibilityChanges = new ArrayList<>();
+
+		public void addCompatibilityChange(ApiCompatibilityChange apiCompatibilityChange) {
+			this.apiCompatibilityChanges.add(apiCompatibilityChange);
+		}
     }
 
 
@@ -216,4 +223,16 @@ public class ListDiff {
     public boolean isEmpty() {
         return this.listDiffsEntries.isEmpty();
     }
+
+	public ListDiffEntry<String> getListDiffEntryByName(String name) {
+		for (ListDiffEntry<?> listDiffEntry : this.listDiffsEntries) {
+			if (listDiffEntry.getType() == ListDiffEntryType.STRING) {
+				ListDiffEntry<String> listDiffEntryStr = (ListDiffEntry<String>) listDiffEntry;
+				if (name.equals(listDiffEntryStr.newValue) || name.equals(listDiffEntryStr.oldValue)) {
+					return listDiffEntryStr;
+				}
+			}
+		}
+		return null;
+	}
 }

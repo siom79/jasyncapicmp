@@ -13,30 +13,30 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class StringDiff implements HasCompatibilityChanges {
-	private String oldValue;
-	private String newValue;
+public class IntegerDiff implements HasCompatibilityChanges {
+	private Integer oldValue;
+	private Integer newValue;
 	private ChangeStatus changeStatus = ChangeStatus.UNCHANGED;
 	private List<ApiCompatibilityChange> apiCompatibilityChanges = new ArrayList<>();
 
-	public static StringDiff compare(String oldValue, String newValue) {
-		StringDiff stringDiff = new StringDiff();
-		stringDiff.setOldValue(oldValue);
-		stringDiff.setNewValue(newValue);
+	public static IntegerDiff compare(Integer oldValue, Integer newValue) {
+		IntegerDiff integerDiff = new IntegerDiff();
+		integerDiff.setOldValue(oldValue);
+		integerDiff.setNewValue(newValue);
 		if (oldValue == null && newValue == null) {
-			stringDiff.setChangeStatus(ChangeStatus.UNCHANGED);
+			integerDiff.setChangeStatus(ChangeStatus.UNCHANGED);
 		} else if (oldValue == null) {
-			stringDiff.setChangeStatus(ChangeStatus.ADDED);
+			integerDiff.setChangeStatus(ChangeStatus.ADDED);
 		} else if (newValue == null) {
-			stringDiff.setChangeStatus(ChangeStatus.REMOVED);
+			integerDiff.setChangeStatus(ChangeStatus.REMOVED);
 		} else {
 			if (oldValue.equals(newValue)) {
-				stringDiff.setChangeStatus(ChangeStatus.UNCHANGED);
+				integerDiff.setChangeStatus(ChangeStatus.UNCHANGED);
 			} else {
-				stringDiff.setChangeStatus(ChangeStatus.CHANGED);
+				integerDiff.setChangeStatus(ChangeStatus.CHANGED);
 			}
 		}
-		return stringDiff;
+		return integerDiff;
 	}
 
 	public boolean isNull() {

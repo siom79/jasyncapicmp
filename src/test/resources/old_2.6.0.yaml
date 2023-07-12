@@ -58,9 +58,7 @@ channels:
           type: object
           properties:
             user:
-              type: object
-            signup:
-              type: object
+              type: string
         correlationId:
           description: Default Correlation ID
           location: $message.header#/correlationId

@@ -2,6 +2,7 @@ package jasyncapicmp.cmp.diff;
 
 import jasyncapicmp.cmp.ApiCompatibilityChange;
 import jasyncapicmp.cmp.ChangeStatus;
+import jasyncapicmp.cmp.compat.HasCompatibilityChanges;
 import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class MapDiff {
     @Getter
     @Setter
     @ToString
-    public static class MapDiffEntry {
+    public static class MapDiffEntry implements HasCompatibilityChanges {
         private Model oldValue;
         private Model newValue;
         private ObjectDiff objectDiff;

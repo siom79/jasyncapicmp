@@ -38,7 +38,7 @@ an asyncapi specification.
 Development of this tool is not completed, yet. Hence, there are a lot of planned
 features:
 
-- Evaluation of changes as breaking or not-breaking
+- Evaluation of more changes as breaking or not-breaking
 - HTML report
 - Maven plugin
 - Gradle plugin
@@ -82,8 +82,42 @@ servers: (===)
         enums: (***)
           - 8883 (===)
           - 8884 (+++)
+channels: (===)
+  userSignedUp: (===)
+    subscribe: (===)
+      summary: Action to sign a user up. (===)
+      operationId: userSignup (===)
+      message: (===)
+        contentType: application/json (===)
+        payload: (===)
+          type: object (===)
+          properties: (===)
+            role: (+++, compatibility change: SCHEMA_PROPERTY_ADDED)
+              type: string (+++)
+            user: (===)
+              type: string (===)
 [...]
 ```
+
+The following incompatibilities ares detected:
+
+| Incompatibility                  | Backward compatible | Forward compatible |
+|----------------------------------| ------------------- | ------------------ |
+| CHANNEL_ADDED                    |true | true |
+| CHANNEL_REMOVED                  |false | false |
+| OPERATION_OPERATION_ID_CHANGED   |false | false |
+| MESSAGE_MESSAGE_ID_CHANGED       |false | false |
+| MESSAGE_CONTENT_TYPE_CHANGED     |false | false |
+| MESSAGE_SCHEMA_FORMAT_CHANGED    |false | false |
+| SCHEMA_TYPE_CHANGED              |false | false |
+| SCHEMA_PROPERTY_ADDED            |true | true |
+| SCHEMA_PROPERTY_REMOVED          |true | true |
+| SCHEMA_PROPERTY_REQUIRED_ADDED   |false | true |
+| SCHEMA_PROPERTY_REQUIRED_REMOVED |true | false |
+| SCHEMA_MIN_LENGTH_INCREASED      |false|true|
+| SCHEMA_MIN_LENGTH_DECREASED      |true | false |
+| SCHEMA_MAX_LENGTH_INCREASED      |true | false |
+| SCHEMA_MAX_LENGTH_DECREASED      |false|true|
 
 ## Contributions
 
