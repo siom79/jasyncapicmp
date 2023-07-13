@@ -2,10 +2,7 @@ package jasyncapicmp.output;
 
 import jasyncapicmp.JAsyncApiCmpTechnicalException;
 import jasyncapicmp.cmp.ChangeStatus;
-import jasyncapicmp.cmp.diff.ListDiff;
-import jasyncapicmp.cmp.diff.MapDiff;
-import jasyncapicmp.cmp.diff.ObjectDiff;
-import jasyncapicmp.cmp.diff.StringDiff;
+import jasyncapicmp.cmp.diff.*;
 import jasyncapicmp.model.AsyncApi;
 import jasyncapicmp.model.Model;
 
@@ -31,11 +28,16 @@ public class OutputProcessor {
             Class<?> type = field.getType();
             String name = field.getName();
             if (type == String.class) {
-                StringDiff stringDiff = objectDiff.getStringDiffs().get(name);
-                if (stringDiff != null) {
-                    printStringDiff(ot, indent, name, stringDiff);
-                }
-            } else if (type == Map.class) {
+				StringDiff stringDiff = objectDiff.getStringDiffs().get(name);
+				if (stringDiff != null) {
+					printStringDiff(ot, indent, name, stringDiff);
+				}
+			} else if (type == int.class) {
+				IntegerDiff integerDiff = objectDiff.getIntegerDiffs().get(name);
+				if (integerDiff != null) {
+					printIntegerDiff(ot, indent, name, integerDiff);
+				}
+			} else if (type == Map.class) {
                 MapDiff mapDiff = objectDiff.getMapDiffs().get(name);
                 if (mapDiff != null) {
                     printMapDiff(ot, indent, name, mapDiff);
@@ -54,29 +56,41 @@ public class OutputProcessor {
         }
     }
 
-    private void process(OutputSink ot, ObjectDiff objectDiff, Indent indent) {
-        for (Map.Entry<String, StringDiff> stringDiff : objectDiff.getStringDiffs().entrySet()) {
-            String key = stringDiff.getKey();
-            StringDiff value = stringDiff.getValue();
-            printStringDiff(ot, indent, key, value);
-        }
-        for (Map.Entry<String, ObjectDiff> objectDiffEntry : objectDiff.getObjectDiffs().entrySet()) {
-            printObjectDiff(ot, indent, objectDiffEntry.getKey(), objectDiffEntry.getValue());
-        }
-        for (Map.Entry<String, MapDiff> mapDiffEntry : objectDiff.getMapDiffs().entrySet()) {
-            printMapDiff(ot, indent, mapDiffEntry.getKey(), mapDiffEntry.getValue());
-        }
-        for (Map.Entry<String, ListDiff> listDiffEntry : objectDiff.getListDiffs().entrySet()) {
-            printListDiff(ot, indent, listDiffEntry.getKey(), listDiffEntry.getValue());
-        }
-        if (objectDiff.getChangeStatus() == ChangeStatus.ADDED) {
-            printModel(ot, indent, objectDiff.getNewValue(), objectDiff.getChangeStatus());
-        } else if (objectDiff.getChangeStatus() == ChangeStatus.REMOVED) {
-            printModel(ot, indent, objectDiff.getOldValue(), objectDiff.getChangeStatus());
-        }
+	private void process(OutputSink ot, ObjectDiff objectDiff, Indent indent) {
+		boolean printRef = printRefField(ot, indent, objectDiff);
+		if (!printRef) {
+			for (Map.Entry<String, StringDiff> stringDiff : objectDiff.getStringDiffs().entrySet()) {
+				String key = stringDiff.getKey();
+				StringDiff value = stringDiff.getValue();
+				printStringDiff(ot, indent, key, value);
+			}
+			for (Map.Entry<String, ObjectDiff> objectDiffEntry : objectDiff.getObjectDiffs().entrySet()) {
+				printObjectDiff(ot, indent, objectDiffEntry.getKey(), objectDiffEntry.getValue());
+			}
+			for (Map.Entry<String, MapDiff> mapDiffEntry : objectDiff.getMapDiffs().entrySet()) {
+				printMapDiff(ot, indent, mapDiffEntry.getKey(), mapDiffEntry.getValue());
+			}
+			for (Map.Entry<String, ListDiff> listDiffEntry : objectDiff.getListDiffs().entrySet()) {
+				printListDiff(ot, indent, listDiffEntry.getKey(), listDiffEntry.getValue());
+			}
+			if (objectDiff.getChangeStatus() == ChangeStatus.ADDED) {
+				printModel(ot, indent, objectDiff.getNewValue(), objectDiff.getChangeStatus());
+			} else if (objectDiff.getChangeStatus() == ChangeStatus.REMOVED) {
+				printModel(ot, indent, objectDiff.getOldValue(), objectDiff.getChangeStatus());
+			}
+		}
     }
 
-    private void printListDiff(OutputSink ot, Indent indent, String key, ListDiff listDiff) {
+	private boolean printRefField(OutputSink ot, Indent indent, ObjectDiff objectDiff) {
+		StringDiff stringDiff = objectDiff.getStringDiffs().get("ref");
+		if (stringDiff != null && !stringDiff.isNull()) {
+			ot.stringDiff(indent, "ref", stringDiff.getOldValue(), stringDiff.getNewValue(), stringDiff.getChangeStatus(), null);
+			return true;
+		}
+		return false;
+	}
+
+	private void printListDiff(OutputSink ot, Indent indent, String key, ListDiff listDiff) {
         if (!listDiff.isEmpty()) {
             ot.listDiffStart(indent, key, listDiff.getChangeStatus());
             for (ListDiff.ListDiffEntry<?> listDiffEntry : listDiff.getListDiffsEntries()) {
@@ -140,54 +154,79 @@ public class OutputProcessor {
         try {
             Class<? extends Model> aClass = model.getClass();
             Field[] declaredFields = aClass.getDeclaredFields();
-            for (Field field : declaredFields) {
-                field.setAccessible(true);
-                Class<?> type = field.getType();
-                Object value = field.get(model);
-                if (value != null) {
-                    if (String.class.isAssignableFrom(type)) {
-                        ot.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
-                    } else if (Integer.class.isAssignableFrom(type)) {
-                        ot.stringDiff(indent, field.getName(), value.toString(), changeStatus, null);
-                    } else if (Map.class.isAssignableFrom(type)) {
-                        Map<String, Object> map = (Map<String, Object>) value;
-                        for (Map.Entry<String, Object> entry : map.entrySet()) {
-                            Object entryValue = entry.getValue();
-                            if (entryValue instanceof String) {
-                                ot.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus, null);
-                            } else if (entryValue instanceof Model) {
-                                ot.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus, null);
-                                printModel(ot, indent.incDefault(), (Model) entryValue, changeStatus);
-                            }
-                        }
-                    } else if (List.class.isAssignableFrom(type)) {
-                        List list = (List) value;
-                        if (!list.isEmpty()) {
-                            Object o = list.get(0);
-                            if (o instanceof String) {
-                                ot.listDiffStart(indent, field.getName(), changeStatus);
-                                for (Object s : list) {
-                                    ot.listDiffEntryString(indent, s, changeStatus, null);
-                                }
-                            } else if (o instanceof Model) {
-                                ot.listDiffStart(indent, field.getName(), changeStatus);
-                                for (Object m : list) {
-                                    ot.listDiffEntryMap(indent.incDefault());
-                                    printModel(ot, indent.incDefault().incListIndent().nextTimeNoIndent(), (Model) m, ChangeStatus.ADDED);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+			boolean refField = printRefField(ot, indent, model, changeStatus, declaredFields);
+			if (!refField) {
+				for (Field field : declaredFields) {
+					field.setAccessible(true);
+					Class<?> type = field.getType();
+					Object value = field.get(model);
+					if (value != null) {
+						if (String.class.isAssignableFrom(type)) {
+							ot.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
+						} else if (Integer.class.isAssignableFrom(type)) {
+							ot.stringDiff(indent, field.getName(), value.toString(), changeStatus, null);
+						} else if (Map.class.isAssignableFrom(type)) {
+							Map<String, Object> map = (Map<String, Object>) value;
+							for (Map.Entry<String, Object> entry : map.entrySet()) {
+								Object entryValue = entry.getValue();
+								if (entryValue instanceof String) {
+									ot.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus, null);
+								} else if (entryValue instanceof Model) {
+									ot.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus, null);
+									printModel(ot, indent.incDefault(), (Model) entryValue, changeStatus);
+								}
+							}
+						} else if (List.class.isAssignableFrom(type)) {
+							List list = (List) value;
+							if (!list.isEmpty()) {
+								Object o = list.get(0);
+								if (o instanceof String) {
+									ot.listDiffStart(indent, field.getName(), changeStatus);
+									for (Object s : list) {
+										ot.listDiffEntryString(indent, s, changeStatus, null);
+									}
+								} else if (o instanceof Model) {
+									ot.listDiffStart(indent, field.getName(), changeStatus);
+									for (Object m : list) {
+										ot.listDiffEntryMap(indent.incDefault());
+										printModel(ot, indent.incDefault().incListIndent().nextTimeNoIndent(), (Model) m, ChangeStatus.ADDED);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
         } catch (SecurityException | IllegalAccessException e) {
             throw new JAsyncApiCmpTechnicalException("Failed to access field: " + e.getMessage(), e);
         }
     }
 
-    private void printStringDiff(OutputSink ot, Indent indent, String key, StringDiff value) {
+	private static boolean printRefField(OutputSink ot, Indent indent, Model model, ChangeStatus changeStatus, Field[] declaredFields) throws IllegalAccessException {
+		boolean refField = false;
+		for (Field field : declaredFields) {
+			if ("ref".equals(field.getName())) {
+				field.setAccessible(true);
+				Object value = field.get(model);
+				refField = value instanceof String && !((String) value).isEmpty();
+				if (refField) {
+					ot.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
+					break;
+				}
+			}
+		}
+		return refField;
+	}
+
+	private void printStringDiff(OutputSink ot, Indent indent, String key, StringDiff value) {
         if (!value.isNull()) {
             ot.stringDiff(indent, key, value.getOldValue(), value.getNewValue(), value.getChangeStatus(), value);
         }
     }
+
+	private void printIntegerDiff(OutputSink ot, Indent indent, String name, IntegerDiff integerDiff) {
+		if (!integerDiff.isNull()) {
+			ot.integerDiff(indent, name, integerDiff.getOldValue(), integerDiff.getNewValue(), integerDiff.getChangeStatus(), integerDiff);
+		}
+	}
 }

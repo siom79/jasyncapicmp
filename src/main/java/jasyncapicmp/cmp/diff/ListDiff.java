@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ListDiff {
+public class ListDiff implements DiffModel {
     private List oldValue;
     private List newValue;
     private ChangeStatus changeStatus = ChangeStatus.UNCHANGED;
@@ -31,7 +31,7 @@ public class ListDiff {
     @Getter
     @Setter
     @ToString
-    public static class ListDiffEntry<T> implements HasCompatibilityChanges {
+    public static class ListDiffEntry<T> implements DiffModel, HasCompatibilityChanges {
         ListDiffEntryType type;
         private T oldValue;
         private T newValue;
@@ -66,7 +66,7 @@ public class ListDiff {
                 listDiff.setChangeStatus(ChangeStatus.REMOVED);
             } else {
                 compareLists(oldValue, newValue, listDiff);
-                listDiff.setChangeStatus(ChangeStatus.CHANGED);
+                listDiff.setChangeStatus(ChangeStatus.UNCHANGED);
             }
         }
         return listDiff;
@@ -83,7 +83,7 @@ public class ListDiff {
 
     private static void compareListsModel(List oldList, List newList, ListDiff listDiff) {
         try {
-            Field idField = getIdField(oldList.get(0).getClass());
+            Field idField = getIdField(oldList.get(0).getClass(), oldList, newList);
             if (idField != null) {
                 List<Model> processedNew = new ArrayList<>();
                 for (Object o : oldList) {
@@ -143,17 +143,44 @@ public class ListDiff {
         }
     }
 
-    private static Field getIdField(Class<?> aClass) {
+    private static Field getIdField(Class<?> aClass, List oldList, List newList) {
         Field[] declaredFields = aClass.getDeclaredFields();
+		Field idField = null;
+		Field nameField = null;
+		Field titleField = null;
         for (Field field : declaredFields) {
             ListId annotation = field.getAnnotation(ListId.class);
             if (annotation != null) {
+				idField = field;
                 field.setAccessible(true);
-                return field;
             }
+			if ("name".equals(field.getName())) {
+				field.setAccessible(true);
+				nameField = field;
+			}
+			if ("title".equals(field.getName())) {
+				field.setAccessible(true);
+				titleField = field;
+			}
         }
-        return null;
-    }
+		if (idField != null && hasFieldValue(idField, newList)) {
+			return idField;
+		}
+		if (nameField != null && hasFieldValue(nameField, newList)) {
+			return nameField;
+		}
+		return titleField;
+	}
+
+	private static boolean hasFieldValue(Field field, List list) {
+		return list.stream().anyMatch(o -> {
+			try {
+				return field.get(o) != null;
+			} catch (IllegalAccessException e) {
+				return false;
+			}
+		});
+	}
 
     private static void compareListsString(List oldList, List newList, ListDiff listDiff) {
         List<String> processedNew = new ArrayList<>();

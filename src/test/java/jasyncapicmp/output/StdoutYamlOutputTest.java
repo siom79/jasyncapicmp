@@ -1,9 +1,15 @@
 package jasyncapicmp.output;
 
+import jasyncapicmp.cmp.ApiCompatibilityCheck;
+import jasyncapicmp.cmp.AsyncApiComparator;
 import jasyncapicmp.cmp.diff.ObjectDiff;
+import jasyncapicmp.model.AsyncApi;
+import jasyncapicmp.parser.AsyncApiParser;
 import jasyncapicmp.util.TestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
 
 class StdoutYamlOutputTest {
 
@@ -90,7 +96,7 @@ servers:
         Assertions.assertThat(output).isEqualTo("""
 servers: (===)
   development: (===)
-    tags: (***)
+    tags: (===)
       - name: removed (---)
         description: removed desc (---)
       - name: unchanged (===)
@@ -232,7 +238,7 @@ servers: (===)
     variables: (===)
       port: (===)
         defaultValue: 8883 (===)
-        enums: (***)
+        enums: (===)
           - 8883 (===)
           - 8884 (+++)
       username: (===)
@@ -240,4 +246,74 @@ servers: (===)
         description: This value is assigned by the service provider, in this example `gigantic-server.com` (===)
                 """);
     }
+
+	@Test
+	void testSchemaOneOfRef() {
+		AsyncApiComparator comparator = new AsyncApiComparator();
+		AsyncApiParser parser = new AsyncApiParser();
+		AsyncApi oldApi = parser.parse(("""
+channels:
+  userSignedUp:
+    subscribe:
+      operationId: userSignup
+      summary: Action to sign a user up.
+      description: A longer description
+      message:
+        oneOf:
+          - $ref: "#/components/messages/M1"
+          - $ref: "#/components/messages/M2"
+components:
+  messages:
+    M1:
+      title: "Title1"
+    M2:
+      title: "Title2"
+""").getBytes(StandardCharsets.UTF_8), "/path");
+		AsyncApi newApi = parser.parse(("""
+channels:
+  userSignedUp:
+    subscribe:
+      operationId: userSignup
+      summary: Action to sign a user up.
+      description: A longer description
+      message:
+        oneOf:
+          - $ref: "#/components/messages/M1"
+          - $ref: "#/components/messages/M2"
+components:
+  messages:
+    M1:
+      title: "Title1"
+    M2:
+      title: "Title2"
+                      """).getBytes(StandardCharsets.UTF_8), "/path");
+
+		ObjectDiff objectDiff = comparator.compare(oldApi, newApi);
+		ApiCompatibilityCheck apiCompatibilityCheck = new ApiCompatibilityCheck();
+		apiCompatibilityCheck.check(objectDiff);
+
+		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
+		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
+		outputProcessor.process(objectDiff);
+		String output = stdoutOutputTracker.toString();
+
+		Assertions.assertThat(output).isEqualTo("""
+channels: (===)
+  userSignedUp: (===)
+    subscribe: (===)
+      summary: Action to sign a user up. (===)
+      operationId: userSignup (===)
+      description: A longer description (===)
+      message: (===)
+        oneOf: (===)
+          - ref: #/components/messages/M1 (===)
+          - ref: #/components/messages/M2 (===)
+components: (===)
+  messages: (===)
+    M1: (===)
+      title: Title1 (===)
+    M2: (===)
+      title: Title2 (===)
+""");
+	}
 }

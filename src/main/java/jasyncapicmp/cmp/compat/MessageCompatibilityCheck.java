@@ -5,7 +5,7 @@ import jasyncapicmp.cmp.ChangeStatus;
 import jasyncapicmp.cmp.diff.ObjectDiff;
 import jasyncapicmp.cmp.diff.StringDiff;
 
-public class MessageDiff {
+public class MessageCompatibilityCheck {
 
 	public static void check(ObjectDiff messageDiff) {
 		StringDiff messageIdDiff = messageDiff.getStringDiffs().get("messageId");
@@ -27,6 +27,6 @@ public class MessageDiff {
 			}
 		}
 		ObjectDiff payloadDiff = messageDiff.getObjectDiffs().get("payload");
-		SchemaDiff.check(payloadDiff);
+		SchemaCompatibilityCheck.check(payloadDiff);
 	}
 }

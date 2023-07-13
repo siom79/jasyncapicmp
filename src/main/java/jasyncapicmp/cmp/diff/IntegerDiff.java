@@ -3,6 +3,7 @@ package jasyncapicmp.cmp.diff;
 import jasyncapicmp.cmp.ApiCompatibilityChange;
 import jasyncapicmp.cmp.ChangeStatus;
 import jasyncapicmp.cmp.compat.HasCompatibilityChanges;
+import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,14 +14,18 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class IntegerDiff implements HasCompatibilityChanges {
+public class IntegerDiff implements DiffModel, HasCompatibilityChanges {
+	private Model oldModel;
+	private Model newModel;
 	private Integer oldValue;
 	private Integer newValue;
 	private ChangeStatus changeStatus = ChangeStatus.UNCHANGED;
 	private List<ApiCompatibilityChange> apiCompatibilityChanges = new ArrayList<>();
 
-	public static IntegerDiff compare(Integer oldValue, Integer newValue) {
+	public static IntegerDiff compare(Model oldModel, Model newModel, Integer oldValue, Integer newValue) {
 		IntegerDiff integerDiff = new IntegerDiff();
+		integerDiff.setOldModel(oldModel);
+		integerDiff.setNewModel(newModel);
 		integerDiff.setOldValue(oldValue);
 		integerDiff.setNewValue(newValue);
 		if (oldValue == null && newValue == null) {

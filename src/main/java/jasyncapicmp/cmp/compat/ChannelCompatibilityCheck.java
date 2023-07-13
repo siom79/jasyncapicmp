@@ -7,7 +7,7 @@ import jasyncapicmp.cmp.diff.ObjectDiff;
 
 import java.util.Map;
 
-public class ChannelDiff {
+public class ChannelCompatibilityCheck {
 
 	public static void check(ObjectDiff objectDiff) {
 		MapDiff mapDiff = objectDiff.getMapDiffs().get("channels");
@@ -19,7 +19,7 @@ public class ChannelDiff {
 				} else if (mapDiffEntry.getChangeStatus() == ChangeStatus.REMOVED) {
 					mapDiffEntry.addCompatibilityChange(ApiCompatibilityChange.CHANNEL_REMOVED);
 				} else {
-					ChannelItemDiff.check(mapDiffEntry.getObjectDiff());
+					ChannelItemCompatibilityCheck.check(mapDiffEntry.getObjectDiff());
 				}
 			}
 		}

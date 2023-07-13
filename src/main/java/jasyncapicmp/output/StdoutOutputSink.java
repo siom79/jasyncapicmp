@@ -35,6 +35,17 @@ public class StdoutOutputSink implements OutputSink {
 	}
 
 	@Override
+	public void integerDiff(Indent indent, String key, Integer oldValue, Integer newValue, ChangeStatus changeStatus, HasCompatibilityChanges hasCompatibilityChanges) {
+		sb.append(indent(indent)).append(key).append(": ");
+		switch (changeStatus) {
+			case UNCHANGED, REMOVED -> sb.append(oldValue).append(changeStatus(changeStatus, hasCompatibilityChanges));
+			case ADDED -> sb.append(newValue).append(changeStatus(changeStatus, hasCompatibilityChanges));
+			case CHANGED -> sb.append(newValue).append(changeStatus(changeStatus, oldValue, hasCompatibilityChanges));
+		}
+		sb.append("\n");
+	}
+
+	@Override
 	public void mapDiffStart(Indent indent, String key, ChangeStatus changeStatus) {
 		sb.append(indent(indent)).append(key).append(":").append(changeStatus(changeStatus, null)).append("\n");
 	}
@@ -81,7 +92,7 @@ public class StdoutOutputSink implements OutputSink {
 		return changeStatus(changeStatus, null, hasCompatibilityChanges);
 	}
 
-	private String changeStatus(ChangeStatus changeStatus, String oldValue, HasCompatibilityChanges hasCompatibilityChanges) {
+	private String changeStatus(ChangeStatus changeStatus, Object oldValue, HasCompatibilityChanges hasCompatibilityChanges) {
 		boolean compatibilityChanges = false;
 		if (hasCompatibilityChanges != null) {
 			compatibilityChanges = hasCompatibilityChanges.getApiCompatibilityChanges().stream()

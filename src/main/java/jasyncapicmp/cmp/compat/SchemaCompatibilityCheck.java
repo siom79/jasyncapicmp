@@ -6,7 +6,7 @@ import jasyncapicmp.cmp.diff.*;
 
 import java.util.Map;
 
-public class SchemaDiff {
+public class SchemaCompatibilityCheck {
 
 	public static void check(ObjectDiff schemaDiff) {
 		checkType(schemaDiff);

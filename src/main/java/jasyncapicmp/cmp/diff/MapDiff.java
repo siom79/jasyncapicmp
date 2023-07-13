@@ -16,7 +16,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class MapDiff {
+public class MapDiff implements DiffModel {
     private Map<String, MapDiffEntry> mapDiffEntries = new HashMap<>();
     private Map<String, Model> oldValue;
     private Map<String, Model> newValue;
@@ -25,7 +25,7 @@ public class MapDiff {
     @Getter
     @Setter
     @ToString
-    public static class MapDiffEntry implements HasCompatibilityChanges {
+    public static class MapDiffEntry implements DiffModel, HasCompatibilityChanges {
         private Model oldValue;
         private Model newValue;
         private ObjectDiff objectDiff;

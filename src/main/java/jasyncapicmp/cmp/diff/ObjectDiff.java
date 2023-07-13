@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class ObjectDiff {
+public class ObjectDiff implements DiffModel {
     private Class<? extends Model> type;
     private Model oldValue;
     private Model newValue;
@@ -49,7 +49,7 @@ public class ObjectDiff {
                     Class<?> fieldType = field.getType();
                     String fieldName = field.getName();
                     if (String.class.isAssignableFrom(fieldType)) {
-                        compareString(oldObj, newObj, objectDiff, field, fieldName);
+                        compareString((Model) oldObj, (Model) newObj, objectDiff, field, fieldName);
                     } else if (Model.class.isAssignableFrom(fieldType)) {
                         compareModel(oldObj, newObj, objectDiff, field, fieldType, fieldName);
                     } else if (Map.class.isAssignableFrom(fieldType)) {
@@ -57,7 +57,7 @@ public class ObjectDiff {
                     } else if (List.class.isAssignableFrom(fieldType)) {
                         compareLists(oldObj, newObj, objectDiff, field, fieldName);
                     } else if (int.class.isAssignableFrom(fieldType)) {
-						compareInteger(oldObj, newObj, objectDiff, field, fieldName);
+						compareInteger((Model) oldObj, (Model) newObj, objectDiff, field, fieldName);
 					}
                 }
             }
@@ -98,17 +98,17 @@ public class ObjectDiff {
         }
     }
 
-    private static void compareString(Object oldObj, Object newObj, ObjectDiff objectDiff, Field field, String fieldName) throws IllegalAccessException {
+    private static void compareString(Model oldObj, Model newObj, ObjectDiff objectDiff, Field field, String fieldName) throws IllegalAccessException {
         String oldFieldValue = (String) field.get(oldObj);
         String newFieldValue = (String) field.get(newObj);
-        StringDiff stringDiff = StringDiff.compare(oldFieldValue, newFieldValue);
+        StringDiff stringDiff = StringDiff.compare(oldObj, newObj, oldFieldValue, newFieldValue);
         objectDiff.stringDiffs.put(fieldName, stringDiff);
     }
 
-	private static void compareInteger(Object oldObj, Object newObj, ObjectDiff objectDiff, Field field, String fieldName) throws IllegalAccessException {
+	private static void compareInteger(Model oldObj, Model newObj, ObjectDiff objectDiff, Field field, String fieldName) throws IllegalAccessException {
 		Integer oldFieldValue = (Integer) field.get(oldObj);
 		Integer newFieldValue = (Integer) field.get(newObj);
-		IntegerDiff integerDiff = IntegerDiff.compare(oldFieldValue, newFieldValue);
+		IntegerDiff integerDiff = IntegerDiff.compare(oldObj, newObj, oldFieldValue, newFieldValue);
 		objectDiff.integerDiffs.put(fieldName, integerDiff);
 	}
 

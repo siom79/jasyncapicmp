@@ -1,12 +1,12 @@
 package jasyncapicmp.cmp;
 
-import jasyncapicmp.cmp.compat.ChannelDiff;
+import jasyncapicmp.cmp.compat.ChannelCompatibilityCheck;
 import jasyncapicmp.cmp.diff.ObjectDiff;
 
 public class ApiCompatibilityCheck {
 
 	public ObjectDiff check(ObjectDiff objectDiff) {
-		ChannelDiff.check(objectDiff);
+		ChannelCompatibilityCheck.check(objectDiff);
 		return objectDiff;
 	}
 }

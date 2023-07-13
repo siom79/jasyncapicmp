@@ -8,6 +8,8 @@ public interface OutputSink {
 
     void stringDiff(Indent indent, String name, String value, ChangeStatus changeStatus, HasCompatibilityChanges hasCompatibilityChanges);
 
+	void integerDiff(Indent indent, String name, Integer oldValue, Integer newValue, ChangeStatus changeStatus, HasCompatibilityChanges hasCompatibilityChanges);
+
 	void mapDiffStart(Indent indent, String key, ChangeStatus changeStatus);
 
 	void mapDiffEntry(Indent indent, String key, ChangeStatus changeStatus, HasCompatibilityChanges hasCompatibilityChanges);
