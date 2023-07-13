@@ -54,6 +54,21 @@ mvn package
 java -jar target/jasyncapicmp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -o old.yaml -n new.yaml
 ```
 
+A read-to-use jar file with all dependencies can be downloaded from github packages [here](https://github.com/siom79/jasyncapicmp/packages/).
+Be sure to download the file with the extension `-jar-with-dependencies.jar`.
+
+You can also use it as a library:
+
+```xml
+<dependency>
+  <groupId>com.github.siom79.jasyncapicmp</groupId>
+  <artifactId>jasyncapicmp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+How to configure github packages as maven repository is shown [here](https://github.com/TobseF/github-plugin-registry-example).
+
 Sample output:
 
 ```yaml
