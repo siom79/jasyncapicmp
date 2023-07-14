@@ -16,6 +16,36 @@ AsyncApiComparator comparator = new AsyncApiComparator();
 ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
 ```
 
+You can also use the maven plugin:
+```xml
+<build>
+	<plugins>
+		<plugin>
+			<groupId>com.github.siom79.jasyncapicmp</groupId>
+			<artifactId>jasyncapicmp-maven-plugin</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<executions>
+				<execution>
+					<id>cmp</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>jasyncapicmp</goal>
+					</goals>
+					<configuration>
+						<oldVersion>
+							<file>old_2.6.0.yaml</file>
+						</oldVersion>
+						<newVersion>
+							<file>new_2.6.0.yaml</file>
+						</newVersion>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
+```
+
 ## Motivation
 
 Every time you release a new version of an API defined by a asyncapi specification,
