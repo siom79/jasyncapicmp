@@ -70,7 +70,6 @@ features:
 
 - Evaluation of more changes as breaking or not-breaking
 - HTML report
-- Maven plugin
 - Gradle plugin
 
 ## Usage
