@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>jasyncapicmp-base</artifactId>
-		<groupId>com.github.siom79.jasyncapicmp</groupId>
+		<groupId>io.github.siom79.jasyncapicmp</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -57,7 +57,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.siom79.jasyncapicmp</groupId>
+			<groupId>io.github.siom79.jasyncapicmp</groupId>
 			<artifactId>jasyncapicmp</artifactId>
 			<version>${project.version}</version>
 		</dependency>

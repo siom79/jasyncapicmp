@@ -21,7 +21,7 @@ You can also use the maven plugin:
 <build>
 	<plugins>
 		<plugin>
-			<groupId>com.github.siom79.jasyncapicmp</groupId>
+			<groupId>io.github.siom79.jasyncapicmp</groupId>
 			<artifactId>jasyncapicmp-maven-plugin</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<executions>
@@ -90,7 +90,7 @@ You can also use it as a library:
 
 ```xml
 <dependency>
-  <groupId>com.github.siom79.jasyncapicmp</groupId>
+  <groupId>io.github.siom79.jasyncapicmp</groupId>
   <artifactId>jasyncapicmp</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 </dependency>
