@@ -182,6 +182,11 @@ mvn versions:commit
 ```
 Replace version in `README.md`
 ```bash
-mvn versions:set -DnewVersion=<new-version>
-mvn versions:commit
+git add .
+git commit -m "Release <new-version>"
+git push origin
+git tag v<new-version>
+git push origin --tags
 ```
+Run Github Action [Release](https://github.com/siom79/jasyncapicmp/actions/workflows/maven-publish-central.yml)
+
