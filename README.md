@@ -3,7 +3,7 @@
 jasyncapicmp is a tool to compare two versions of a [asyncapi](https://www.asyncapi.com/) specification:
 
 ```bash
-java -jar target/jasyncapicmp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -o old.yaml -n new.yaml
+java -jar target/jasyncapicmp-0.0.1-jar-with-dependencies.jar -o old.yaml -n new.yaml
 ```
 
 It can also be used as a library to parse and compare asyncapi specifications:
@@ -16,35 +16,7 @@ AsyncApiComparator comparator = new AsyncApiComparator();
 ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
 ```
 
-You can also use the maven plugin:
-```xml
-<build>
-	<plugins>
-		<plugin>
-			<groupId>io.github.siom79.jasyncapicmp</groupId>
-			<artifactId>jasyncapicmp-maven-plugin</artifactId>
-			<version>0.0.1</version>
-			<executions>
-				<execution>
-					<id>cmp</id>
-					<phase>verify</phase>
-					<goals>
-						<goal>jasyncapicmp</goal>
-					</goals>
-					<configuration>
-						<oldVersion>
-							<file>old_2.6.0.yaml</file>
-						</oldVersion>
-						<newVersion>
-							<file>new_2.6.0.yaml</file>
-						</newVersion>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-	</plugins>
-</build>
-```
+There is also a maven plugin available.
 
 ## Motivation
 
@@ -80,10 +52,10 @@ To use the tool you can clone the repository, build the tool and run it:
 git clone https://github.com/siom79/jasyncapicmp.git
 cd jasyncapicmp
 mvn package
-java -jar target/jasyncapicmp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -o old.yaml -n new.yaml
+java -jar target/jasyncapicmp-0.0.1-jar-with-dependencies.jar -o old.yaml -n new.yaml
 ```
 
-A read-to-use jar file with all dependencies can be downloaded from github packages [here](https://github.com/siom79/jasyncapicmp/packages/).
+A read-to-use jar file with all dependencies can be downloaded from the Maven Central Repository [here](https://repo1.maven.org/maven2/io/github/siom79/jasyncapicmp/).
 Be sure to download the file with the extension `-jar-with-dependencies.jar`.
 
 You can also use it as a library:
@@ -92,11 +64,40 @@ You can also use it as a library:
 <dependency>
   <groupId>io.github.siom79.jasyncapicmp</groupId>
   <artifactId>jasyncapicmp</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 </dependency>
 ```
 
-How to configure github packages as maven repository is shown [here](https://github.com/TobseF/github-plugin-registry-example).
+To integrate the output into your build, you can utilize the maven plugin:
+
+```xml
+<build>
+	<plugins>
+		<plugin>
+			<groupId>io.github.siom79.jasyncapicmp</groupId>
+			<artifactId>jasyncapicmp-maven-plugin</artifactId>
+			<version>0.0.1</version>
+			<executions>
+				<execution>
+					<id>cmp</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>jasyncapicmp</goal>
+					</goals>
+					<configuration>
+						<oldVersion>
+							<file>old_2.6.0.yaml</file>
+						</oldVersion>
+						<newVersion>
+							<file>new_2.6.0.yaml</file>
+						</newVersion>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
+```
 
 Sample output:
 
@@ -189,4 +190,10 @@ git tag v<new-version>
 git push origin --tags
 ```
 Run Github Action [Release](https://github.com/siom79/jasyncapicmp/actions/workflows/maven-publish-central.yml)
-
+Login to [OSSRH](https://s01.oss.sonatype.org/#stagingRepositories), close and release staging repository
+```bash
+mvn versions:set -DnewVersion=<new-SNAPSHOT-version>
+mvn versions:commit
+git add .
+git commit -m "New SNAPSHOT version <new-SNAPSHOT-version>"
+```
