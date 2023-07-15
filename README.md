@@ -23,7 +23,7 @@ You can also use the maven plugin:
 		<plugin>
 			<groupId>io.github.siom79.jasyncapicmp</groupId>
 			<artifactId>jasyncapicmp-maven-plugin</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<executions>
 				<execution>
 					<id>cmp</id>
@@ -172,3 +172,16 @@ Pull requests are welcome, but please follow these rules:
 * Name classes/methods/fields expressively.
 * Fork the repo and create a pull request (see [GitHub Flow](https://guides.github.com/introduction/flow/index.html)).
 
+## Release
+
+This is the current release procedure:
+
+```bash
+mvn versions:set -DnewVersion=<new-version>
+mvn versions:commit
+```
+Replace version in `README.md`
+```bash
+mvn versions:set -DnewVersion=<new-version>
+mvn versions:commit
+```

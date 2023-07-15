@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jasyncapicmp-base</artifactId>
 		<groupId>io.github.siom79.jasyncapicmp</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 
 	<artifactId>jasyncapicmp-maven-plugin</artifactId>
