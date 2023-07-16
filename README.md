@@ -178,18 +178,10 @@ Pull requests are welcome, but please follow these rules:
 This is the current release procedure:
 
 ```bash
-mvn versions:set -DnewVersion=<new-version>
-mvn versions:commit
-```
-Replace version in `README.md`
-```bash
-git add .
-git commit -m "Release <new-version>"
-git push origin
-git tag v<new-version>
-git push origin --tags
+./release-prepare.sh <last-released-version> <new-version>
 ```
 Run Github Action [Release](https://github.com/siom79/jasyncapicmp/actions/workflows/maven-publish-central.yml)
+
 Login to [OSSRH](https://s01.oss.sonatype.org/#stagingRepositories), close and release staging repository
 ```bash
 mvn versions:set -DnewVersion=<new-SNAPSHOT-version>
