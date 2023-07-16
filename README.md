@@ -55,7 +55,7 @@ mvn package
 java -jar target/jasyncapicmp-0.0.1-jar-with-dependencies.jar -o old.yaml -n new.yaml
 ```
 
-A read-to-use jar file with all dependencies can be downloaded from the Maven Central Repository [here](https://repo1.maven.org/maven2/io/github/siom79/jasyncapicmp/).
+A read-to-use jar file with all dependencies can be downloaded from the Maven Central Repository [here](https://repo1.maven.org/maven2/io/github/siom79/jasyncapicmp/jasyncapicmp/0.0.1/jasyncapicmp-0.0.1-jar-with-dependencies.jar).
 Be sure to download the file with the extension `-jar-with-dependencies.jar`.
 
 You can also use it as a library:
