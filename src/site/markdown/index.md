@@ -18,8 +18,6 @@ ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
 
 There is also a maven plugin available.
 
-The website is located [here](https://siom79.github.io/jasyncapicmp/).
-
 ## Motivation
 
 Every time you release a new version of an API defined by a asyncapi specification,
@@ -165,29 +163,3 @@ The following incompatibilities ares detected:
 | SCHEMA_MIN_LENGTH_DECREASED      |true | false |
 | SCHEMA_MAX_LENGTH_INCREASED      |true | false |
 | SCHEMA_MAX_LENGTH_DECREASED      |false|true|
-
-## Contributions
-
-Pull requests are welcome, but please follow these rules:
-
-* The basic editor settings (indentation, newline, etc.) are described in the `.editorconfig` file (see [EditorConfig](http://editorconfig.org/)).
-* Provide a unit test for every change.
-* Name classes/methods/fields expressively.
-* Fork the repo and create a pull request (see [GitHub Flow](https://guides.github.com/introduction/flow/index.html)).
-
-## Release
-
-This is the current release procedure:
-
-```bash
-./release-prepare.sh <last-released-version> <new-version>
-```
-Run Github Action [Release](https://github.com/siom79/jasyncapicmp/actions/workflows/maven-publish-central.yml)
-
-Login to [OSSRH](https://s01.oss.sonatype.org/#stagingRepositories), close and release staging repository
-```bash
-mvn versions:set -DnewVersion=<new-SNAPSHOT-version>
-mvn versions:commit
-git add .
-git commit -m "New SNAPSHOT version <new-SNAPSHOT-version>"
-```

@@ -2,7 +2,7 @@
 title: jasyncapicmp
 description: Tool for comparing two AsyncAPI versions and evaluating compatibility.
 links:
-  websiteUrl: https://github.com/siom79/jasyncapicmp
+  websiteUrl: https://siom79.github.io/jasyncapicmp/
   docsUrl: https://github.com/siom79/jasyncapicmp
   repoUrl: https://github.com/siom79/jasyncapicmp
 filters:

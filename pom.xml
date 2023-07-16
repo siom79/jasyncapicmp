@@ -11,7 +11,7 @@
 
 	<name>jasyncapicmp</name>
 	<description>jasyncapicmp is a tool to compare two versions of a AsyncAPI specification.</description>
-	<url>https://github.com/siom79/jasyncapicmp</url>
+	<url>https://siom79.github.io/jasyncapicmp/</url>
 
 	<modules>
 		<module>jasyncapicmp</module>
@@ -38,6 +38,16 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.12.0</version>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>
@@ -96,6 +106,10 @@
 	</profiles>
 
 	<distributionManagement>
+		<site>
+			<id>jasyncapicmp</id>
+			<url>file://${user.dir}/target/deploy/site</url>
+		</site>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
