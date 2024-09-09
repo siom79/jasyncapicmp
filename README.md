@@ -111,80 +111,64 @@ Sample output:
 asyncapi: 2.6.0 # ===
 id: https://github.com/siom79/jasyncapicmp # ===
 info: # ===
-	description: This is a sample app. # ===
-	termsOfService: https://asyncapi.org/terms/ # ===
-	title: AsyncAPI Sample App # ===
-	version: 1.0.0 # *** old: 0.1.0
-	license: # ===
-		name: Apache 2.0 # ===
-		url: https://www.apache.org/licenses/LICENSE-2.0.html # ===
-	contact: # ===
-		name: API Support # ===
-		url: https://www.asyncapi.org/support # ===
-		email: support@asyncapi.org # *** old: team@asyncapi.org
+  description: This is a sample app. # ===
+  termsOfService: https://asyncapi.org/terms/ # ===
+  title: AsyncAPI Sample App # ===
+  version: 1.0.0 # *** old: 0.1.0
+  license: # ===
+    name: Apache 2.0 # ===
+    url: https://www.apache.org/licenses/LICENSE-2.0.html # ===
+  contact: # ===
+    name: API Support # ===
+    url: https://www.asyncapi.org/support # ===
+    email: support@asyncapi.org # *** old: team@asyncapi.org
 servers: # ===
-	development: # ===
-		protocol: amqp # ===
-		description: Development AMQP broker. # ===
-		protocolVersion: 0-9-1 # ===
-		url: localhost:5672 # ===
-		tags: # ===
-			- name: env:development # ===
-			  description: This environment is meant for developers to run their own tests. # ===
-	staging: # ===
-		protocol: amqp # ===
-		description: RabbitMQ broker. Use the `env` variable to point to either `production` or `staging`. # *** old: RabbitMQ broker. Use the `env` variable to point to either `production`.
-		url: rabbitmq.in.mycompany.com:5672 # ===
-		variables: # ===
-			env: # ===
-				description: Environment to connect to. It can be either `production` or `staging`. # ===
-				enums: # ===
-					- production # ===
-					- staging # ===
-		tags: # +++
-			- name: env:staging # +++
-			  description: This environment is meant for staging. # +++
+  development: # ===
+    protocol: amqp # ===
+    description: Development AMQP broker. # ===
+    protocolVersion: 0-9-1 # ===
+    url: localhost:5672 # ===
+    tags: # ===
+      - name: env:development # ===
+        description: This environment is meant for developers to run their own tests. # ===
+  staging: # ===
+    protocol: amqp # ===
+    description: RabbitMQ broker. Use the `env` variable to point to either `production` or `staging`. # *** old: RabbitMQ broker. Use the `env` variable to point to either `production`.
+    url: rabbitmq.in.mycompany.com:5672 # ===
+    variables: # ===
+      env: # ===
+        description: Environment to connect to. It can be either `production` or `staging`. # ===
+        enums: # ===
+          - production # ===
+          - staging # ===
+    tags: # +++
+      - name: env:staging # +++
+        description: This environment is meant for staging. # +++
 defaultContentType: application/json # ===
 channels: # ===
-	userSignedUp: # ===
-		subscribe: # ===
-			summary: Action to sign a user up. # ===
-			operationId: userSignup # ===
-			description: A longer description # ===
-			message: # ===
-				contentType: application/json # ===
-				headers: # ===
-					type: object # ===
-					properties: # ===
-						correlationId: # ===
-							description: Correlation ID set by application # ===
-							type: string # ===
-						applicationInstanceId: # ===
-							description: Unique identifier for a given instance of the publishing application # ===
-							type: string # ===
-				payload: # ===
-					type: object # ===
-					properties: # ===
-						role: # +++, compatibility change: SCHEMA_PROPERTY_ADDED
-							type: string # +++
-						user: # ===
-							type: string # ===
-				correlationId: # ===
-					description: Default Correlation ID # ===
-					location: $message.header#/correlationId # ===
-				traits: # ===
-					- ref: #/components/messageTraits/commonHeaders # ---
-					- ref: #/components/messageTraits/commonHeaders # +++
-				examples: # ===
-					- summary: A simple UserSignup example message # ===
-					  name: SimpleSignup # ===
-				tags: # ===
-					- name: user # ===
-					  description: User-Tag # ---
-					- name: signup # ===
-					- name: register # ===
-					- name: new-tag # +++
-					  description: Completely new tag # +++
+  userSignedUp: # ===
+    subscribe: # ===
+      summary: Action to sign a user up. # ===
+      operationId: userSignup # ===
+      description: A longer description # ===
+      message: # ===
+        contentType: application/json # ===
+        headers: # ===
+          type: object # ===
+          properties: # ===
+            correlationId: # ===
+              description: Correlation ID set by application # ===
+              type: string # ===
+            applicationInstanceId: # ===
+              description: Unique identifier for a given instance of the publishing application # ===
+              type: string # ===
+        payload: # ===
+          type: object # ===
+          properties: # ===
+            role: # +++, compatibility change: SCHEMA_PROPERTY_ADDED
+              type: string # +++
+            user: # ===
+              type: string # ===
 [...]
 ```
 
