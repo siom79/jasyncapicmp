@@ -112,7 +112,7 @@ public class StdoutOutputSink implements OutputSink {
 			compatibilityChanges = hasCompatibilityChanges.getApiCompatibilityChanges().stream()
 					.anyMatch(acc -> !acc.isBackwardCompatible() || !acc.isForwardCompatible());
 		}
-		String retVal = " (";
+		String retVal = " # ";
 		if (compatibilityChanges) {
 			retVal += "!";
 		}
@@ -139,6 +139,6 @@ public class StdoutOutputSink implements OutputSink {
 			retVal += ", compatibility change" + (hasCompatibilityChanges.getApiCompatibilityChanges().size() > 1 ? "s" : "") + ": ";
 			retVal += hasCompatibilityChanges.getApiCompatibilityChanges().stream().map(Enum::name).collect(Collectors.joining(","));
 		}
-		return retVal + ")";
+		return retVal;
 	}
 }

@@ -22,8 +22,8 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 (===)\n" +
-				"id: new (+++)\n");
+        Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 # ===\n" +
+				"id: new # +++\n");
     }
 
     @Test
@@ -35,7 +35,7 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 (===)\nid: old (---)\n");
+        Assertions.assertThat(output).isEqualTo("asyncapi: 2.6.0 # ===\nid: old # ---\n");
     }
 
     @Test
@@ -47,7 +47,7 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("id: new (*** old: old)\n");
+        Assertions.assertThat(output).isEqualTo("id: new # *** old: old\n");
     }
 
     @Test
@@ -59,7 +59,7 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("id: my-id (===)\n");
+        Assertions.assertThat(output).isEqualTo("id: my-id # ===\n");
     }
 
     @Test
@@ -87,17 +87,17 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("servers: (===)\n" +
-				"  development: (===)\n" +
-				"    tags: (===)\n" +
-				"      - name: removed (---)\n" +
-				"        description: removed desc (---)\n" +
-				"      - name: unchanged (===)\n" +
-				"        description: unchanged desc (===)\n" +
-				"      - name: changed (===)\n" +
-				"        description: changed-to-this desc (*** old: changed desc)\n" +
-				"      - name: new (+++)\n" +
-				"        description: new desc (+++)\n");
+        Assertions.assertThat(output).isEqualTo("servers: # ===\n" +
+				"  development: # ===\n" +
+				"    tags: # ===\n" +
+				"      - name: removed # ---\n" +
+				"        description: removed desc # ---\n" +
+				"      - name: unchanged # ===\n" +
+				"        description: unchanged desc # ===\n" +
+				"      - name: changed # ===\n" +
+				"        description: changed-to-this desc # *** old: changed desc\n" +
+				"      - name: new # +++\n" +
+				"        description: new desc # +++\n");
     }
 
     @Test
@@ -119,13 +119,13 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("servers: (===)\n" +
-				"  development: (===)\n" +
-				"    protocol: amqp (===)\n" +
-				"    url: localhost:5672 (===)\n" +
-				"    tags: (+++)\n" +
-				"      - name: new (+++)\n" +
-				"        description: new desc (+++)\n");
+        Assertions.assertThat(output).isEqualTo("servers: # ===\n" +
+				"  development: # ===\n" +
+				"    protocol: amqp # ===\n" +
+				"    url: localhost:5672 # ===\n" +
+				"    tags: # +++\n" +
+				"      - name: new # +++\n" +
+				"        description: new desc # +++\n");
     }
 
     @Test
@@ -140,10 +140,10 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("servers: (+++)\n" +
-				"  development: (+++)\n" +
-				"    url: localhost:5672 (+++)\n" +
-				"    protocol: amqp (+++)\n");
+        Assertions.assertThat(output).isEqualTo("servers: # +++\n" +
+				"  development: # +++\n" +
+				"    url: localhost:5672 # +++\n" +
+				"    protocol: amqp # +++\n");
     }
 
     @Test
@@ -158,10 +158,10 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("servers: (---)\n" +
-				"  development: (---)\n" +
-				"    url: localhost:5672 (---)\n" +
-				"    protocol: amqp (---)\n");
+        Assertions.assertThat(output).isEqualTo("servers: # ---\n" +
+				"  development: # ---\n" +
+				"    url: localhost:5672 # ---\n" +
+				"    protocol: amqp # ---\n");
     }
 
     @Test
@@ -201,20 +201,20 @@ class StdoutYamlOutputTest {
         outputProcessor.process(objectDiff);
         String output = stdoutOutputTracker.toString();
 
-        Assertions.assertThat(output).isEqualTo("servers: (===)\n" +
-				"  production: (===)\n" +
-				"    protocol: secure-mqtt (===)\n" +
-				"    description: The production API server (===)\n" +
-				"    url: {username}.gigantic-server.com:{port}/{basePath} (===)\n" +
-				"    variables: (===)\n" +
-				"      port: (===)\n" +
-				"        defaultValue: 8883 (===)\n" +
-				"        enums: (===)\n" +
-				"          - 8883 (===)\n" +
-				"          - 8884 (+++)\n" +
-				"      username: (===)\n" +
-				"        defaultValue: demo (===)\n" +
-				"        description: This value is assigned by the service provider, in this example `gigantic-server.com` (===)\n");
+        Assertions.assertThat(output).isEqualTo("servers: # ===\n" +
+				"  production: # ===\n" +
+				"    protocol: secure-mqtt # ===\n" +
+				"    description: The production API server # ===\n" +
+				"    url: {username}.gigantic-server.com:{port}/{basePath} # ===\n" +
+				"    variables: # ===\n" +
+				"      port: # ===\n" +
+				"        defaultValue: 8883 # ===\n" +
+				"        enums: # ===\n" +
+				"          - 8883 # ===\n" +
+				"          - 8884 # +++\n" +
+				"      username: # ===\n" +
+				"        defaultValue: demo # ===\n" +
+				"        description: This value is assigned by the service provider, in this example `gigantic-server.com` # ===\n");
     }
 
 	@Test
@@ -263,21 +263,48 @@ class StdoutYamlOutputTest {
 		outputProcessor.process(objectDiff);
 		String output = stdoutOutputTracker.toString();
 
-		Assertions.assertThat(output).isEqualTo("channels: (===)\n" +
-				"  userSignedUp: (===)\n" +
-				"    subscribe: (===)\n" +
-				"      summary: Action to sign a user up. (===)\n" +
-				"      operationId: userSignup (===)\n" +
-				"      description: A longer description (===)\n" +
-				"      message: (===)\n" +
-				"        oneOf: (===)\n" +
-				"          - ref: #/components/messages/M1 (===)\n" +
-				"          - ref: #/components/messages/M2 (===)\n" +
-				"components: (===)\n" +
-				"  messages: (===)\n" +
-				"    M1: (===)\n" +
-				"      title: Title1 (===)\n" +
-				"    M2: (===)\n" +
-				"      title: Title2 (===)\n");
+		Assertions.assertThat(output).isEqualTo("channels: # ===\n" +
+				"  userSignedUp: # ===\n" +
+				"    subscribe: # ===\n" +
+				"      summary: Action to sign a user up. # ===\n" +
+				"      operationId: userSignup # ===\n" +
+				"      description: A longer description # ===\n" +
+				"      message: # ===\n" +
+				"        oneOf: # ===\n" +
+				"          - ref: #/components/messages/M1 # ===\n" +
+				"          - ref: #/components/messages/M2 # ===\n" +
+				"components: # ===\n" +
+				"  messages: # ===\n" +
+				"    M1: # ===\n" +
+				"      title: Title1 # ===\n" +
+				"    M2: # ===\n" +
+				"      title: Title2 # ===\n");
+	}
+
+	@Test
+	void testInvalidYaml() {
+		AsyncApiComparator comparator = new AsyncApiComparator();
+		AsyncApiParser parser = new AsyncApiParser();
+		AsyncApi oldApi = parser.parse(("services:\n" +
+			"\n" +
+			"  frontend:\n" +
+			"    build:\n" +
+			"      context: ./frontend\n" +
+			"    container_name: japicmpweb-frontend\n" +
+			"    ports:\n" +
+			"      - \"80:80\"\n" +
+			"      - \"443:443\"").getBytes(StandardCharsets.UTF_8), "/path");
+		AsyncApi newApi = parser.parse(("services:\n" +
+			"\n" +
+			"  frontend:\n" +
+			"    build:\n" +
+			"      context: ./frontend\n" +
+			"    container_name: japicmpweb-frontend\n" +
+			"    ports:\n" +
+			"      - \"80:80\"\n" +
+			"      - \"443:443\"").getBytes(StandardCharsets.UTF_8), "/path");
+
+		ObjectDiff objectDiff = comparator.compare(oldApi, newApi);
+		System.out.println(objectDiff);
 	}
 }
