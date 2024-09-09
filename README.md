@@ -105,7 +105,7 @@ To integrate the output into your build, you can utilize the maven plugin:
 </build>
 ```
 
-Sample output:
+Sample output (old values and incompatibilities are printed as comment):
 
 ```yaml
 asyncapi: 2.6.0 # ===
