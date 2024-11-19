@@ -1,7 +1,7 @@
 package jasyncapicmp.validator;
 
-import jasyncapicmp.model.AsyncApi;
-import jasyncapicmp.model.Info;
+import jasyncapicmp.model.asyncapi.AsyncApi;
+import jasyncapicmp.model.asyncapi.Info;
 import jasyncapicmp.util.StringUtils;
 
 import java.util.ArrayList;

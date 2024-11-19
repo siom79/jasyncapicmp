@@ -1,8 +1,8 @@
 package jasyncapicmp.cmp;
 
 import jasyncapicmp.cmp.diff.ObjectDiff;
-import jasyncapicmp.model.AsyncApi;
-import jasyncapicmp.parser.AsyncApiParser;
+import jasyncapicmp.model.asyncapi.AsyncApi;
+import jasyncapicmp.parser.ApiParser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +12,11 @@ class ApiCompatibilityCheckTest {
 
 	@Test
 	void testNewChannel() {
-		AsyncApiComparator comparator = new AsyncApiComparator();
-		AsyncApiParser parser = new AsyncApiParser();
-		AsyncApi oldApi = parser.parse(("channels:").getBytes(StandardCharsets.UTF_8), "/path");
-		AsyncApi newApi = parser.parse(("channels:\n" +
+		ApiComparator comparator = new ApiComparator();
+		ApiParser parser = new ApiParser();
+		AsyncApi oldApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\nchannels:").getBytes(StandardCharsets.UTF_8), "/path");
+		AsyncApi newApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\n" +
+			"channels:\n" +
 				"  userSignedUp:\n" +
 				"    subscribe:\n" +
 				"      operationId: userSignup\n" +
@@ -35,9 +36,10 @@ class ApiCompatibilityCheckTest {
 
 	@Test
 	void testChannelItemMessageContentTypeChanged() {
-		AsyncApiComparator comparator = new AsyncApiComparator();
-		AsyncApiParser parser = new AsyncApiParser();
-		AsyncApi oldApi = parser.parse(("channels:\n" +
+		ApiComparator comparator = new ApiComparator();
+		ApiParser parser = new ApiParser();
+		AsyncApi oldApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\n" +
+			    "channels:\n" +
 				"  userSignedUp:\n" +
 				"    subscribe:\n" +
 				"      operationId: userSignup\n" +
@@ -45,7 +47,8 @@ class ApiCompatibilityCheckTest {
 				"      description: A longer description\n" +
 				"      message:\n" +
 				"        contentType: application/json").getBytes(StandardCharsets.UTF_8), "/path");
-		AsyncApi newApi = parser.parse(("channels:\n" +
+		AsyncApi newApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\n" +
+			    "channels:\n" +
 				"  userSignedUp:\n" +
 				"    subscribe:\n" +
 				"      operationId: userSignup\n" +
@@ -67,9 +70,10 @@ class ApiCompatibilityCheckTest {
 
 	@Test
 	void testChannelItemMessageSchemaFormatChanged() {
-		AsyncApiComparator comparator = new AsyncApiComparator();
-		AsyncApiParser parser = new AsyncApiParser();
-		AsyncApi oldApi = parser.parse(("channels:\n" +
+		ApiComparator comparator = new ApiComparator();
+		ApiParser parser = new ApiParser();
+		AsyncApi oldApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\n" +
+			    "channels:\n" +
 				"  userSignedUp:\n" +
 				"    subscribe:\n" +
 				"      operationId: userSignup\n" +
@@ -82,7 +86,8 @@ class ApiCompatibilityCheckTest {
 				"            properties:\n" +
 				"                user:\n" +
 				"                    type: string").getBytes(StandardCharsets.UTF_8), "/path");
-		AsyncApi newApi = parser.parse(("channels:\n" +
+		AsyncApi newApi = (AsyncApi) parser.parse(("asyncapi: 2.6.0\n" +
+			    "channels:\n" +
 				"  userSignedUp:\n" +
 				"    subscribe:\n" +
 				"      operationId: userSignup\n" +

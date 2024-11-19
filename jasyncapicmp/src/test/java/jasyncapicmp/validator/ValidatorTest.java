@@ -1,6 +1,6 @@
 package jasyncapicmp.validator;
 
-import jasyncapicmp.model.AsyncApi;
+import jasyncapicmp.model.asyncapi.AsyncApi;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

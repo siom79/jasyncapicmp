@@ -17,7 +17,7 @@ Instead, these are common Backward-incompatible changes:
 - Renaming fields in request/response
 - Changing types for fields in request/response
 - Changing the status codes
-- Changing headers (”content-type” etc…)
+- Changing headers (”content-format” etc…)
 
 # Forward
 

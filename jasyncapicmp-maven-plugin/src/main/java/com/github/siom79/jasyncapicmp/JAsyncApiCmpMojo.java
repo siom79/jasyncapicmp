@@ -1,13 +1,16 @@
 package com.github.siom79.jasyncapicmp;
 
 import com.github.siom79.jasyncapicmp.configuration.Version;
+import jasyncapicmp.JAsyncApiCmpUserException;
+import jasyncapicmp.cmp.ApiComparator;
 import jasyncapicmp.cmp.ApiCompatibilityCheck;
-import jasyncapicmp.cmp.AsyncApiComparator;
 import jasyncapicmp.cmp.diff.ObjectDiff;
-import jasyncapicmp.model.AsyncApi;
+import jasyncapicmp.model.Api;
+import jasyncapicmp.model.asyncapi.AsyncApi;
+import jasyncapicmp.model.openapi.OpenApi;
 import jasyncapicmp.output.OutputProcessor;
 import jasyncapicmp.output.StdoutOutputSink;
-import jasyncapicmp.parser.AsyncApiParser;
+import jasyncapicmp.parser.ApiParser;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -33,16 +36,23 @@ public class JAsyncApiCmpMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException {
 		try {
-			AsyncApiParser asyncApiParser = new AsyncApiParser();
-			AsyncApi oldAsyncApi = asyncApiParser.parse(Files.readAllBytes(oldVersion.getFile().toPath()), oldVersion.getFile().getPath());
-			AsyncApi newAsyncApi = asyncApiParser.parse(Files.readAllBytes(newVersion.getFile().toPath()), newVersion.getFile().getPath());
-			AsyncApiComparator comparator = new AsyncApiComparator();
-			ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
+			ApiParser apiParser = new ApiParser();
+			Api oldApi = apiParser.parse(Files.readAllBytes(oldVersion.getFile().toPath()), oldVersion.getFile().getPath());
+			Api newApi = apiParser.parse(Files.readAllBytes(newVersion.getFile().toPath()), newVersion.getFile().getPath());
+			ApiComparator comparator = new ApiComparator();
+			ObjectDiff objectDiff;
+			if (oldApi instanceof AsyncApi && newApi instanceof AsyncApi) {
+				objectDiff = comparator.compare((AsyncApi) oldApi, (AsyncApi) newApi);
+			} else if (oldApi instanceof OpenApi && newApi instanceof OpenApi) {
+				objectDiff = comparator.compare((OpenApi) oldApi, (OpenApi) newApi);
+			} else {
+				throw new JAsyncApiCmpUserException("Unable to compare AsyncApi vs. OpenApi.");
+			}
 			ApiCompatibilityCheck apiCompatibilityCheck = new ApiCompatibilityCheck();
-			diff = apiCompatibilityCheck.check(diff);
+			objectDiff = apiCompatibilityCheck.check(objectDiff);
 			StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 			OutputProcessor stdoutYamlOutput = new OutputProcessor(stdoutOutputTracker);
-			stdoutYamlOutput.process(diff);
+			stdoutYamlOutput.process(objectDiff);
 			Path outputPath = Paths.get(outputDirectory.getPath(), "jasyncapicmp.txt");
 			getLog().info("Writing output to " + outputPath);
 			Files.write(outputPath, stdoutOutputTracker.toString().getBytes(StandardCharsets.UTF_8));

@@ -8,9 +8,9 @@ java -jar target/jasyncapicmp-0.0.1-jar-with-dependencies.jar -o old.yaml -n new
 
 It can also be used as a library to parse and compare asyncapi specifications:
 ```java
-AsyncApiParser asyncApiParser = new AsyncApiParser();
-AsyncApi oldAsyncApi = asyncApiParser.parse(oldFile, config.getOldPath());
-AsyncApi newAsyncApi = asyncApiParser.parse(newFile, config.getNewPath());
+AsyncApiParser apiParser = new AsyncApiParser();
+AsyncApi oldAsyncApi = apiParser.parse(oldFile, config.getOldPath());
+AsyncApi newAsyncApi = apiParser.parse(newFile, config.getNewPath());
 
 AsyncApiComparator comparator = new AsyncApiComparator();
 ObjectDiff diff = comparator.compare(oldAsyncApi, newAsyncApi);
@@ -135,12 +135,12 @@ channels: (===)
       message: (===)
         contentType: application/json (===)
         payload: (===)
-          type: object (===)
+          format: object (===)
           properties: (===)
             role: (+++, compatibility change: SCHEMA_PROPERTY_ADDED)
-              type: string (+++)
+              format: string (+++)
             user: (===)
-              type: string (===)
+              format: string (===)
 [...]
 ```
 

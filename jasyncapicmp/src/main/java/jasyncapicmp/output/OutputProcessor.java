@@ -3,8 +3,8 @@ package jasyncapicmp.output;
 import jasyncapicmp.JAsyncApiCmpTechnicalException;
 import jasyncapicmp.cmp.ChangeStatus;
 import jasyncapicmp.cmp.diff.*;
-import jasyncapicmp.model.AsyncApi;
 import jasyncapicmp.model.Model;
+import jasyncapicmp.model.asyncapi.AsyncApi;
 
 import java.lang.reflect.Field;
 import java.util.List;
