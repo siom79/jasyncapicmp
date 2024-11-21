@@ -3,6 +3,7 @@ package jasyncapicmp.parser;
 import jasyncapicmp.JAsyncApiCmpUserException;
 import jasyncapicmp.model.Api;
 import jasyncapicmp.model.asyncapi.AsyncApi;
+import jasyncapicmp.model.openapi.OpenApi;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class ApiParserTest {
+class AsyncApiParserTest {
 
     @Test
-    void testJson() {
+    void testAsyncApiJson() {
         ApiParser parser = new ApiParser();
         String content = "{\"asyncapi\":\"3.0.0\"}";
 
@@ -25,7 +26,7 @@ class ApiParserTest {
     }
 
     @Test
-    void testYaml() {
+    void testAsyncApiYaml() {
         ApiParser parser = new ApiParser();
         String content = "asyncapi: \"3.0.0\"\n";
 
@@ -34,6 +35,28 @@ class ApiParserTest {
 		Assertions.assertThat(api).isInstanceOf(AsyncApi.class);
 		Assertions.assertThat(((AsyncApi)api).getAsyncapi()).isEqualTo("3.0.0");
     }
+
+	@Test
+	void testOpenApiJson() {
+		ApiParser parser = new ApiParser();
+		String content = "{\"openapi\":\"3.1.1\"}";
+
+		Api api = parser.parse(content.getBytes(StandardCharsets.UTF_8), "/path");
+
+		Assertions.assertThat(api).isInstanceOf(OpenApi.class);
+		Assertions.assertThat(((OpenApi)api).getOpenapi()).isEqualTo("3.1.1");
+	}
+
+	@Test
+	void testOpenApiYaml() {
+		ApiParser parser = new ApiParser();
+		String content = "openapi: \"3.1.1\"\n";
+
+		Api api = parser.parse(content.getBytes(StandardCharsets.UTF_8), "/path");
+
+		Assertions.assertThat(api).isInstanceOf(OpenApi.class);
+		Assertions.assertThat(((OpenApi)api).getOpenapi()).isEqualTo("3.1.1");
+	}
 
     @Test
     void testEmpty() {

@@ -1,0 +1,13 @@
+package jasyncapicmp.model.openapi;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class ExternalDocumentation {
+	private String description;
+	private String url;
+}
