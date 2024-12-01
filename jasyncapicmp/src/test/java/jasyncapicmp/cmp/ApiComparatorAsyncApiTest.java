@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 
-class ApiComparatorTest {
+class ApiComparatorAsyncApiTest {
 
     @Test
     void testServerAddedRemovedChanged() {

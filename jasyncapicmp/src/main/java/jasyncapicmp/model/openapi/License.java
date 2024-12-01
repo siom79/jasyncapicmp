@@ -1,5 +1,6 @@
 package jasyncapicmp.model.openapi;
 
+import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class License {
+public class License implements Model {
 	private String name;
 	private String identifier;
 	private String url;

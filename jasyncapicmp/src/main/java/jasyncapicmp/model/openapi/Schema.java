@@ -1,6 +1,8 @@
 package jasyncapicmp.model.openapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jasyncapicmp.model.Model;
+import jasyncapicmp.model.Reference;
 import jasyncapicmp.model.asyncapi.ListId;
 import jasyncapicmp.model.asyncapi.SchemaPattern;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Schema {
+public class Schema implements Model, Reference {
 	@ListId
 	private String title;
 	private String type;

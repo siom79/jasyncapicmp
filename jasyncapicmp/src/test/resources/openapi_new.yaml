@@ -1,0 +1,145 @@
+openapi: 3.1.1
+info:
+    title: Example Pet Store App
+    summary: A pet store manager.
+    description: This is an example server for a pet store.
+    termsOfService: https://example.com/terms/
+    contact:
+        name: API Support
+        url: https://www.example.com/support
+        email: support_new@example.com
+    license:
+        name: Apache 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0.html
+    version: 1.0.2
+servers:
+    -   url: https://development.gigantic-server.com/v1
+        description: Development server
+    -   url: https://{username}.gigantic-server.com:{port}/{basePath}
+        description: The production API server
+        variables:
+            username:
+                # note! no enum here means it is an open value
+                default: demo
+                description: A user-specific subdomain. Use `demo` for a free sandbox environment.
+            port:
+                enum:
+                    - '8443'
+                    - '443'
+                default: '8443'
+            basePath:
+                # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+                default: v2
+paths:
+    /pets:
+        get:
+            description: Returns pets based on ID
+            summary: Find pets by ID
+            operationId: getPetsById
+            responses:
+                '200':
+                    description: pet response
+                    content:
+                        '*/*':
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Pet'
+                default:
+                    description: error payload
+                    content:
+                        text/html:
+                            schema:
+                                $ref: '#/components/schemas/ErrorModel'
+        parameters:
+            -   name: id
+                in: path
+                description: ID of pet to use
+                required: true
+                schema:
+                    type: array
+                    items:
+                        type: string
+                style: simple
+        post:
+            requestBody:
+                content:
+                    'application/x-www-form-urlencoded':
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    description: Updated name of the pet
+                                    type: string
+                                status:
+                                    description: Updated status of the pet
+                                    type: string
+                            required:
+                                - status
+            responses:
+                '200':
+                    description: Pet updated.
+                    content:
+                        'application/json': { }
+                        'application/xml': { }
+                '405':
+                    description: Method Not Allowed
+                    content:
+                        'application/json': { }
+                        'application/xml': { }
+components:
+    schemas:
+        Pet:
+            type: object
+            discriminator:
+                propertyName: petType
+            properties:
+                name:
+                    type: string
+                petType:
+                    type: string
+            required:
+                - name
+                - petType
+        Cat:  ## "Cat" will be used as the discriminator value
+            description: A representation of a cat
+            allOf:
+                - $ref: '#/components/schemas/Pet'
+                - type: object
+                  properties:
+                      huntingSkill:
+                          type: string
+                          description: The measured skill for hunting
+                          enum:
+                              - clueless
+                              - lazy
+                              - adventurous
+                              - aggressive
+                  required:
+                      - huntingSkill
+        Dog:  ## "Dog" will be used as the discriminator value
+            description: A representation of a dog
+            allOf:
+                - $ref: '#/components/schemas/Pet'
+                - type: object
+                  properties:
+                      packSize:
+                          type: integer
+                          format: int32
+                          description: the size of the pack the dog is from
+                          default: 0
+                          minimum: 0
+                  required:
+                      - packSize
+        ErrorModel:
+            type: object
+            required:
+                - message
+                - code
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    minimum: 100
+                    maximum: 600

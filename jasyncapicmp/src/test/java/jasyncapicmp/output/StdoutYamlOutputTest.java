@@ -17,7 +17,7 @@ class StdoutYamlOutputTest {
 	public void newString() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: \"2.6.0\"", "asyncapi: \"2.6.0\"\nid: new");
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: \"2.6.0\"", "asyncapi: \"2.6.0\"\nid: new");
 
 		outputProcessor.process(objectDiff);
 		String output = stdoutOutputTracker.toString();
@@ -30,7 +30,7 @@ class StdoutYamlOutputTest {
 	public void removedString() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\nid: old", "asyncapi: 2.6.0\n");
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\nid: old", "asyncapi: 2.6.0\n");
 
 		outputProcessor.process(objectDiff);
 		String output = stdoutOutputTracker.toString();
@@ -42,7 +42,7 @@ class StdoutYamlOutputTest {
 	public void modifiedString() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\nid: old", "asyncapi: 2.6.0\nid: new");
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\nid: old", "asyncapi: 2.6.0\nid: new");
 
 		outputProcessor.process(objectDiff);
 		String output = stdoutOutputTracker.toString();
@@ -55,7 +55,7 @@ class StdoutYamlOutputTest {
 	public void unchangedString() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\nid: my-id", "asyncapi: 2.6.0\nid: my-id");
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\nid: my-id", "asyncapi: 2.6.0\nid: my-id");
 
 		outputProcessor.process(objectDiff);
 		String output = stdoutOutputTracker.toString();
@@ -68,7 +68,7 @@ class StdoutYamlOutputTest {
 	public void newRemovedUnchangedChangedModel() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\n" +
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\n" +
 			"servers:\n" +
 			"  development:\n" +
 			"    tags:\n" +
@@ -110,7 +110,7 @@ class StdoutYamlOutputTest {
 	public void newListElement() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\n" +
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\n" +
 				"servers:\n" +
 				"  development:\n" +
 				"    url: localhost:5672\n" +
@@ -141,7 +141,7 @@ class StdoutYamlOutputTest {
 	public void newMapElement() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\nservers:", "asyncapi: 2.6.0\n" +
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\nservers:", "asyncapi: 2.6.0\n" +
 			"servers:\n" +
 			"  development:\n" +
 			"    url: localhost:5672\n" +
@@ -161,7 +161,7 @@ class StdoutYamlOutputTest {
 	public void removedMapElement() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\n" +
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\n" +
 			"servers:\n" +
 			"  development:\n" +
 			"    url: localhost:5672\n" +
@@ -181,7 +181,7 @@ class StdoutYamlOutputTest {
 	public void newStringListElement() {
 		StdoutOutputSink stdoutOutputTracker = new StdoutOutputSink();
 		OutputProcessor outputProcessor = new OutputProcessor(stdoutOutputTracker);
-		ObjectDiff objectDiff = TestUtil.compareYaml("asyncapi: 2.6.0\n" +
+		ObjectDiff objectDiff = TestUtil.compareAsyncApiYaml("asyncapi: 2.6.0\n" +
 				"servers:\n" +
 				"  production:\n" +
 				"    url: '{username}.gigantic-server.com:{port}/{basePath}'\n" +

@@ -4,7 +4,6 @@ import jasyncapicmp.JAsyncApiCmpTechnicalException;
 import jasyncapicmp.cmp.ChangeStatus;
 import jasyncapicmp.cmp.diff.*;
 import jasyncapicmp.model.Model;
-import jasyncapicmp.model.asyncapi.AsyncApi;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -23,7 +22,7 @@ public class OutputProcessor {
     }
 
     private void printTopLevel(OutputSink ot, ObjectDiff objectDiff, Indent indent) {
-        Field[] declaredFields = AsyncApi.class.getDeclaredFields();
+        Field[] declaredFields = objectDiff.getType().getDeclaredFields();
         for (Field field : declaredFields) {
             Class<?> type = field.getType();
             String name = field.getName();
@@ -153,11 +152,11 @@ public class OutputProcessor {
         }
     }
 
-    private void printModel(OutputSink ot, Indent indent, Model model, ChangeStatus changeStatus) {
+    private void printModel(OutputSink os, Indent indent, Model model, ChangeStatus changeStatus) {
         try {
             Class<? extends Model> aClass = model.getClass();
             Field[] declaredFields = aClass.getDeclaredFields();
-			boolean refField = printRefField(ot, indent, model, changeStatus, declaredFields);
+			boolean refField = printRefField(os, indent, model, changeStatus, declaredFields);
 			if (!refField) {
 				for (Field field : declaredFields) {
 					field.setAccessible(true);
@@ -165,18 +164,18 @@ public class OutputProcessor {
 					Object value = field.get(model);
 					if (value != null) {
 						if (String.class.isAssignableFrom(type)) {
-							ot.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
+							os.stringDiff(indent, field.getName(), (String) value, changeStatus, null);
 						} else if (Integer.class.isAssignableFrom(type)) {
-							ot.stringDiff(indent, field.getName(), value.toString(), changeStatus, null);
+							os.stringDiff(indent, field.getName(), value.toString(), changeStatus, null);
 						} else if (Map.class.isAssignableFrom(type)) {
 							Map<String, Object> map = (Map<String, Object>) value;
 							for (Map.Entry<String, Object> entry : map.entrySet()) {
 								Object entryValue = entry.getValue();
 								if (entryValue instanceof String) {
-									ot.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus, null);
+									os.stringDiff(indent, entry.getKey(), (String) entryValue, changeStatus, null);
 								} else if (entryValue instanceof Model) {
-									ot.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus, null);
-									printModel(ot, indent.incDefault(), (Model) entryValue, changeStatus);
+									os.stringDiff(indent, entry.getKey(), entryValue.toString(), changeStatus, null);
+									printModel(os, indent.incDefault(), (Model) entryValue, changeStatus);
 								}
 							}
 						} else if (List.class.isAssignableFrom(type)) {
@@ -184,18 +183,21 @@ public class OutputProcessor {
 							if (!list.isEmpty()) {
 								Object o = list.get(0);
 								if (o instanceof String) {
-									ot.listDiffStart(indent, field.getName(), changeStatus);
+									os.listDiffStart(indent, field.getName(), changeStatus);
 									for (Object s : list) {
-										ot.listDiffEntryString(indent, s, changeStatus, null);
+										os.listDiffEntryString(indent, s, changeStatus, null);
 									}
 								} else if (o instanceof Model) {
-									ot.listDiffStart(indent, field.getName(), changeStatus);
+									os.listDiffStart(indent, field.getName(), changeStatus);
 									for (Object m : list) {
-										ot.listDiffEntryMap(indent.incDefault());
-										printModel(ot, indent.incDefault().incListIndent().nextTimeNoIndent(), (Model) m, ChangeStatus.ADDED);
+										os.listDiffEntryMap(indent.incDefault());
+										printModel(os, indent.incDefault().incListIndent().nextTimeNoIndent(), (Model) m, ChangeStatus.ADDED);
 									}
 								}
 							}
+						} else if (Model.class.isAssignableFrom(type)) {
+							Model m = (Model) value;
+							printModel(os, indent.incDefault(), m, changeStatus);
 						}
 					}
 				}

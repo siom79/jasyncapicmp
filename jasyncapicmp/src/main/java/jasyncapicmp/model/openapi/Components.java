@@ -1,5 +1,6 @@
 package jasyncapicmp.model.openapi;
 
+import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,7 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Components {
+public class Components implements Model {
 	private Map<String, Schema> schemas = new HashMap<>();
 	private Map<String, Response> responses = new HashMap<>();
 	private Map<String, Parameter> parameters = new HashMap<>();

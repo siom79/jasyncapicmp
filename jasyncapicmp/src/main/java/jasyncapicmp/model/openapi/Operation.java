@@ -1,5 +1,6 @@
 package jasyncapicmp.model.openapi;
 
+import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Operation {
+public class Operation implements Model {
 	private List<String> tags = new ArrayList<>();
 	private String summary;
 	private String description;

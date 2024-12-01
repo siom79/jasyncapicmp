@@ -1,0 +1,31 @@
+openapi: 3.1.1
+info:
+    title: Example Pet Store App
+    version: 1.0.1
+paths:
+    /pets:
+        get:
+            description: Returns pets based on ID
+            summary: Find pets by ID
+            operationId: getPetsById
+            responses:
+                '200':
+                    description: pet response
+                    content:
+                        '*/*':
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Pet1'
+components:
+    schemas:
+        Pet1:
+            type: object
+            properties:
+                name:
+                    $ref: '#/components/schemas/Pet2'
+        Pet2:
+            type: object
+            properties:
+                name:
+                    $ref: '#/components/schemas/Pet1'

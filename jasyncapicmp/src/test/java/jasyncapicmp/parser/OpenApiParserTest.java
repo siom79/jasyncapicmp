@@ -1,5 +1,6 @@
 package jasyncapicmp.parser;
 
+import jasyncapicmp.JAsyncApiCmpUserException;
 import jasyncapicmp.model.openapi.OpenApi;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,4 +60,15 @@ public class OpenApiParserTest {
 		Assertions.assertThat(api.getPaths().get("/pets").getParameters().get(0).getStyle()).isEqualTo("simple");
 	}
 
+	@Test
+	void testRecursion() throws IOException {
+		byte[] bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "src", "test", "resources", "openapi_recursion.yaml"));
+		ApiParser parser = new ApiParser();
+
+		Exception exception = Assertions.catchException(() -> parser.parse(bytes, "/path"));
+
+		Assertions.assertThat(exception)
+			.isInstanceOf(JAsyncApiCmpUserException.class)
+			.hasMessageContaining("Recursion detected");
+	}
 }

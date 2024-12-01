@@ -1,5 +1,6 @@
 package jasyncapicmp.model.openapi;
 
+import jasyncapicmp.model.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class OAuthFlows {
+public class OAuthFlows implements Model {
 	private OAuthFlow implicit;
 	private OAuthFlow password;
 	private OAuthFlow clientCredentials;
