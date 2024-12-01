@@ -82,7 +82,7 @@ public class ObjectDiff implements DiffModel {
         Object newFieldObj = field.get(newObj);
         ObjectDiff objectDiffField = new ObjectDiff((Class<? extends Model>) fieldType);
         objectDiffField.setOldValue((Model) oldFieldObj);
-        objectDiffField.setNewValue((Model) oldFieldObj);
+        objectDiffField.setNewValue((Model) newFieldObj);
         if (oldFieldObj == null && newFieldObj == null) {
             objectDiffField.setChangeStatus(ChangeStatus.UNCHANGED);
             objectDiff.objectDiffs.put(fieldName, objectDiffField);
